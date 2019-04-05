@@ -61,16 +61,16 @@ def run_trim(read_list, output_dir, job_data):
         if "read2" in r:
             trim_cmd+=["--paired", r["read1"],r["read2"]]
             pre_pos = find_prefix(r["read1"])
-            tr["read1"]=".".join(r["read1"].split(".")[0:pre_pos])+"_val_1.fq.gz"
+            tr["read1"]=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_val_1.fq.gz")
             pre_pos = find_prefix(r["read2"])
-            tr["read2"]=".".join(r["read2"].split(".")[0:pre_pos])+"_val_2.fq.gz"
+            tr["read2"]=os.path.join(output_dir,".".join(os.path.basename(r["read2"]).split(".")[0:pre_pos])+"_val_2.fq.gz")
             cur_check.append(tr["read1"])
             cur_check.append(tr["read2"])
 
         else:
             trim_cmd+=[r["read1"]]
             pre_pos = find_prefix(r["read1"])
-            tr["read1"]=".".join(r["read1"].split(".")[0:pre_pos])+"_trimmed.fq.gz"
+            tr["read1"]=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_trimmed.fq.gz")
             cur_check.append(tr["read1"])
         print " ".join(trim_cmd)
         subprocess.check_call(trim_cmd)
