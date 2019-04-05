@@ -24,7 +24,6 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(2)
     map_args = parser.parse_args()
-    assert map_args.d.startswith(".") # job object folder name needs a .
         
     #create library dict
     with open(map_args.jfile, 'r') as job_handle:
