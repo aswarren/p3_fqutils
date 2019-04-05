@@ -1,0 +1,28 @@
+{
+    "output_path": "/anwarren@patricbrc.org/home/debug",
+    "output_file": "test_utils",
+    "reference_genome_id": "1310581.3",
+    "paired_end_libs": [
+        {
+            "read1": "/PATRIC@patricbrc.org/PATRIC Workshop/RNA-Seq/COL_75_R1.fq.gz",
+            "read2": "/PATRIC@patricbrc.org/PATRIC Workshop/RNA-Seq/COL_75_R2.fq.gz"
+        }
+    ],
+    "recipe": [
+        "FastQC",
+        "Align",
+        "Trim",
+        "Align",
+        "FastQC"
+    ],
+    "single_end_libs": [
+        {
+            "read": "/PATRIC@patricbrc.org/PATRIC Workshop/RNA-Seq/MERO_75_R1.fq.gz"
+        }
+    ],
+    "srr_libs": [
+        {
+            "srr_accession": "SRR1185940"
+        }
+    ]
+}

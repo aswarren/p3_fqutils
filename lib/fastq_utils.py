@@ -176,6 +176,7 @@ def run_fq_util(job_data, output_dir, tool_params):
 
     genome_list, read_list, recipe=setup(job_data, output_dir, tool_params)
     for step in recipe:
+        step=step.upper()
         if step == "TRIM":
             trimmed_reads = run_trim(read_list, output_dir, job_data)
             read_list = trimmed_reads
