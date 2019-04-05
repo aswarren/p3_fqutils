@@ -176,8 +176,8 @@ def setup(job_data, output_dir, tool_params):
         genome={}
         job_data["gid"]=gid #cheat
         genome["genome_link"]=get_genome(job_data)
-        genome={"gid"}=gid
-        genome["output"=output_dir
+        genome["gid"]=gid
+        genome["output"]=output_dir
         genome_list.append(genome)
 
     read_list = []
