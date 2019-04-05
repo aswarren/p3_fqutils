@@ -29,15 +29,19 @@ def link_space(file_path):
 def run_fastqc(read_list, output_dir, job_data):
     rcount=0
     for r in read_list:
-        cur_cleanup=[]
+        cur_output=[]
         rcount+=1
-        fastqc_cmd=["fastqc","--outdir",output_dir]
-        if "read2" in r:
-            fastqc_cmd+=[r["read1"],r["read2"]]
-        else:
-            fastqc_cmd+=[r["read1"]]
-        print " ".join(fastqc_cmd)
-        subprocess.check_call(fastqc_cmd)
+        if len(r.get("fastqc",[])) == 0 :
+            fastqc_cmd=["fastqc","--outdir",output_dir]
+            if "read2" in r:
+                fastqc_cmd+=[r["read1"],r["read2"]]
+                r["fastqc"].append(os.path.join(output_dir, r["read1"]+".fastqc.html"))
+                r["fastqc"].append(os.path.join(output_dir, r["read2"]+".fastqc.html"))
+            else:
+                fastqc_cmd+=[r["read1"]]
+                r["fastqc"].append(os.path.join(output_dir, r["read1"]+".fastqc.html"))
+            print " ".join(fastqc_cmd)
+            subprocess.check_call(fastqc_cmd)
 
 
 def find_prefix(filename):
@@ -53,6 +57,7 @@ def run_trim(read_list, output_dir, job_data):
     trimmed_reads=[]
     for r in read_list:
         tr = copy.deepcopy(r)
+        tr["fastqc"]=[]
         cur_check=[]
         rcount+=1
         #trim_galore --gzip --paired -o ../fonsynbiothr/trimmed_reads/ ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R1_001.fastq ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R2_001.fastq
@@ -177,17 +182,17 @@ def setup(job_data, output_dir, tool_params):
         job_data["gid"]=gid #cheat
         genome["genome_link"]=get_genome(job_data)
         genome["gid"]=gid
+        genome["genome"]=gid
         genome["output"]=output_dir
         genome_list.append(genome)
 
     read_list = []
-    for read in job_data.get("paired_end_libs",[])+job_data.get("single_end_libs",[])+job_data.get("srr_libs",[]):
-        if "read" in read:
-            read["read1"] = read.pop("read")
-        read_list.append(read)
-
     rcount=0
-    for r in read_list:
+    for r in job_data.get("paired_end_libs",[])+job_data.get("single_end_libs",[])+job_data.get("srr_libs",[]):
+        if "read" in r:
+            r["read1"] = r.pop("read")
+        read_list.append(r)
+        r["fastqc"]=[]
         target_dir=output_dir
         #subprocess.call(["mkdir","-p",target_dir])
         rcount+=1
@@ -200,7 +205,12 @@ def setup(job_data, output_dir, tool_params):
                 files = job_meta[0].get("files",[])
                 if len(files) > 0:
                     for i,f in enumerate(files):
-                        r["read"+str(i+1)]=os.path.join(target_dir, f)
+                        if f.endswith("_2.fastq.gz"):
+                            r["read2"]=os.path.join(target_dir, f)
+                        if f.endswith("_1.fastq.gz"):
+                            r["read1"]=os.path.join(target_dir, f)
+                        if f.endswith("fastqc.html"):
+                            r["fastqc"].append(os.path.join(target_dir, f))
     recipe = job_data.get("recipe",[])
     return genome_list, read_list, recipe
 
@@ -226,6 +236,6 @@ def run_fq_util(job_data, output_dir, tool_params):
         if step == "FASTQC":
             run_fastqc(read_list, output_dir, job_data)
         if step == "ALIGN":
-            run_alignment(genome_list, read_list, parameters, output_dir, job_data)
+            run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
 
 
