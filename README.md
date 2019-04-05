@@ -26,4 +26,20 @@ This program will:
 #1.1 fastqc report
 #1.2 fastq trimming
 #1.3 read mapping
+
+Dependencies:
+Bowtie2
+https://github.com/BenLangmead/bowtie2
+
+Samstat
+http://samstat.sourceforge.net
+
+Fastqc
+http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+
+Cutadapt
+https://github.com/marcelm/cutadapt
+
+Trimgalore
+https://github.com/FelixKrueger/TrimGalore
 ```
