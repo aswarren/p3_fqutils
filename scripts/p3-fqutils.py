@@ -35,6 +35,7 @@ if __name__ == "__main__":
         output_dir="./"
     else:
         output_dir=map_args.o
+    job_data["output_path"]=output_dir
     count=0
     if map_args.p != None and os.path.exists(map_args.p):
     	tool_params=json.load(open(map_args.p,'r'))
