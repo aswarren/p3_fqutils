@@ -4,7 +4,7 @@ import os, sys
 import subprocess
 import multiprocessing
 import tarfile, json
-import requests
+import requests, copy
 
 #take genome data structure and make directory names.
 def make_directory_names(genome):
@@ -39,6 +39,49 @@ def run_fastqc(read_list, output_dir, job_data):
             fastqc_cmd+=[r["read1"]]
         print " ".join(fastqc_cmd)
         subprocess.check_call(fastqc_cmd)
+
+
+def find_prefix(filename):
+    r1_parts=filename.split(".")
+    prefix_pos = -2 if ((r1_parts[-1] == "gz" or r1_parts[-1] == "gzip") and (r1_parts[-2] == "fq" or r1_parts[-2] == "fastq")) else None
+    if prefix_pos == None:
+        prefix_pos = -1 if ((r1_parts[-1] == "fq" or r1_parts[-1] == "fastq")) else None
+
+
+def run_trim(read_list, output_dir, job_data):
+    rcount=0
+    trimmed_reads=[]
+    for r in read_list:
+        tr = copy.deepcopy(r)
+        cur_check=[]
+        rcount+=1
+        #trim_galore --gzip --paired -o ../fonsynbiothr/trimmed_reads/ ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R1_001.fastq ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R2_001.fastq
+        trim_cmd=["trim_galore","--gzip","-o",output_dir]
+        if "read2" in r:
+            trim_cmd+=["--paired", r["read1"],r["read2"]]
+            pre_pos = find_prefix(r["read1"])
+            tr["read1"]=".".join(r["read1"].split(".")[0:pre_pos]+["_val_1","fq","gz"])
+            pre_pos = find_prefix(r["read2"])
+            tr["read2"]=".".join(r["read2"].split(".")[0:pre_pos]+["_val_2","fq","gz"])
+            cur_check.append(tr["read1"])
+            cur_check.append(tr["read2"])
+
+        else:
+            trim_cmd+=[r["read1"]]
+            pre_pos = find_prefix(r["read1"])
+            tr["read1"]=".".join(r["read1"].split(".")[0:pre_pos]+["_trimmed","fq","gz"])
+            cur_check.append(tr["read1"])
+        print " ".join(trim_cmd)
+        subprocess.check_call(trim_cmd)
+        check_passed = True
+        for c in cur_check:
+            check_passed = check_passed and os.path.exists(os.path.join(output_dir,c))
+        if check_passed:
+            trimmed_reads.append(tr)
+        else:
+            sys.stderr.write("Trimming reads failed at "+" ".join(cur_check))
+            sys.exit()
+        return trimmed_reads
 
 def run_alignment(genome_list, read_list, parameters, output_dir, job_data): 
     #modifies condition_dict sub replicates to include 'bowtie' dict recording output files
