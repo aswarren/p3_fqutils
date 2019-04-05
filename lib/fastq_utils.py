@@ -149,7 +149,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
 def get_genome(parameters):
     target_file = os.path.join(parameters["output_path"],parameters["gid"]+".fna")
     if not os.path.exists(target_file):
-        genome_url= "data_url/genome_sequence/?eq(genome_id,gid)&limit(25000)".replace("data_url",parameters["data_url"]).replace("gid",parameters["gid"])
+        genome_url= "data_url/genome_sequence/?eq(genome_id,gid)&limit(25000)".replace("data_url",parameters["data_api"]).replace("gid",parameters["gid"])
         print genome_url
         headers = {"accept":"application/sralign+dna+fasta"}
         #print "switch THE HEADER BACK!"
