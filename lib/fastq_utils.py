@@ -32,7 +32,6 @@ def run_fastqc(read_list, output_dir, job_data):
         cur_cleanup=[]
         rcount+=1
         fastqc_cmd=["fastqc","--outdir",output_dir]
-        cur_cmd=list(cmd)
         if "read2" in r:
             fastqc_cmd+=[r["read1"],r["read2"]]
         else:
