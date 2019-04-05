@@ -123,10 +123,12 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 name2=os.path.splitext(os.path.basename(r["read2"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+"_"+name2+".sam")
+                cur_cmd+=["--un-conc-gz",os.path.join(target_dir,name1+"_"+name2+"unmapped%.fq.gz")]
             else:
                 cur_cmd+=[" -U",link_space(r["read1"])]
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+".sam")
+                cur_cmd+=["--un-gz",os.path.join(target_dir,name1+"unmapped.fq.gz")]
             cur_cleanup.append(sam_file)
             bam_file=sam_file[:-4]+".bam"
             samstat_cmd.append(bam_file)
