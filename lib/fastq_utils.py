@@ -46,7 +46,7 @@ def find_prefix(filename):
     prefix_pos = -2 if ((r1_parts[-1] == "gz" or r1_parts[-1] == "gzip") and (r1_parts[-2] == "fq" or r1_parts[-2] == "fastq")) else None
     if prefix_pos == None:
         prefix_pos = -1 if ((r1_parts[-1] == "fq" or r1_parts[-1] == "fastq")) else None
-    return pre_pos
+    return prefix_pos
 
 
 def run_trim(read_list, output_dir, job_data):
