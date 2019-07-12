@@ -179,11 +179,14 @@ def get_genome(parameters):
 
 
 def setup(job_data, output_dir, tool_params):
-    genome_ids=[job_data.get("reference_genome_id",None)]
+    genome_ids=[]
+    ref_id = job_data.get("reference_genome_id",None)
+    if ref_id != None:
+        genome_ids.append(ref_id)
     genome_list=[]
     for gid in genome_ids:
         genome={}
-        job_data["gid"]=gid #cheat
+        job_data["gid"]=gid #cheat. this will need expansion if you want to support multiple genomes
         genome["genome_link"]=get_genome(job_data)
         genome["gid"]=gid
         genome["genome"]=gid
