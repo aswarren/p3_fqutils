@@ -5,6 +5,7 @@ import subprocess
 import multiprocessing
 import tarfile, json
 import requests, copy
+from fqutil_api import authenticateByEnv
 
 #take genome data structure and make directory names.
 def make_directory_names(genome):
@@ -162,6 +163,7 @@ def get_genome(parameters):
         #print "switch THE HEADER BACK!"
         #headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}
         req = requests.Request('GET', genome_url, headers=headers)
+        authenticateByEnv(req)
         prepared = req.prepare()
         #pretty_print_POST(prepared)
         s = requests.Session()
