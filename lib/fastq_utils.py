@@ -36,11 +36,11 @@ def run_fastqc(read_list, output_dir, job_data):
             fastqc_cmd=["fastqc","--outdir",output_dir]
             if "read2" in r:
                 fastqc_cmd+=[r["read1"],r["read2"]]
-                r["fastqc"].append(os.path.join(output_dir, r["read1"]+".fastqc.html"))
-                r["fastqc"].append(os.path.join(output_dir, r["read2"]+".fastqc.html"))
+                r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read1"])+".fastqc.html"))
+                r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read2"])+".fastqc.html"))
             else:
                 fastqc_cmd+=[r["read1"]]
-                r["fastqc"].append(os.path.join(output_dir, r["read1"]+".fastqc.html"))
+                r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read1"])+".fastqc.html"))
             print " ".join(fastqc_cmd)
             subprocess.check_call(fastqc_cmd)
 
@@ -60,34 +60,45 @@ def run_trim(read_list, output_dir, job_data):
         tr = copy.deepcopy(r)
         tr["fastqc"]=[]
         cur_check=[]
+        rename_files={}
         rcount+=1
         #trim_galore --gzip --paired -o ../fonsynbiothr/trimmed_reads/ ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R1_001.fastq ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R2_001.fastq
         trim_cmd=["trim_galore","--gzip","-o",output_dir]
         if "read2" in r:
             trim_cmd+=["--paired", r["read1"],r["read2"]]
             pre_pos = find_prefix(r["read1"])
-            tr["read1"]=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_val_1.fq.gz")
+            old_name=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_val_1.fq.gz")
+            cur_check.append(old_name)
+            new_name=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_ptrim.fq.gz")
+            rename_files[old_name]= new_name
+            tr["read1"]=new_name
             pre_pos = find_prefix(r["read2"])
-            tr["read2"]=os.path.join(output_dir,".".join(os.path.basename(r["read2"]).split(".")[0:pre_pos])+"_val_2.fq.gz")
-            cur_check.append(tr["read1"])
-            cur_check.append(tr["read2"])
+            old_name=os.path.join(output_dir,".".join(os.path.basename(r["read2"]).split(".")[0:pre_pos])+"_val_2.fq.gz")
+            cur_check.append(old_name)
+            new_name=os.path.join(output_dir,".".join(os.path.basename(r["read2"]).split(".")[0:pre_pos])+"_ptrim.fq.gz")
+            rename_files[old_name]= new_name
+            tr["read2"]=new_name 
 
         else:
             trim_cmd+=[r["read1"]]
             pre_pos = find_prefix(r["read1"])
-            tr["read1"]=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_trimmed.fq.gz")
-            cur_check.append(tr["read1"])
+            old_name=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_trimmed.fq.gz")
+            cur_check.append(old_name)
+            new_name=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_strim.fq.gz")
+            rename_files[old_name]= new_name
+            tr["read1"]=new_name
         print " ".join(trim_cmd)
         subprocess.check_call(trim_cmd)
         check_passed = True
         for c in cur_check:
-            check_passed = check_passed and os.path.exists(os.path.join(output_dir,c))
+            check_passed = check_passed and os.path.exists(c)
+            if c in rename_files: os.rename(c,rename_files[c])
         if check_passed:
             trimmed_reads.append(tr)
         else:
             sys.stderr.write("Trimming reads failed at "+" ".join(cur_check))
             sys.exit()
-        return trimmed_reads
+    return trimmed_reads
 
 def run_alignment(genome_list, read_list, parameters, output_dir, job_data): 
     #modifies condition_dict sub replicates to include 'bowtie' dict recording output files
@@ -206,7 +217,9 @@ def setup(job_data, output_dir, tool_params):
         if "srr_accession" in r:
             srr_id = r["srr_accession"] 
             meta_file = os.path.join(target_dir,srr_id+"_meta.txt")
-            subprocess.check_call(["p3-sra","--gzip","--out",target_dir,"--metadata-file", meta_file, "--id",srr_id])
+            sra_cmd = ["p3-sra","--gzip","--out",target_dir,"--metadata-file", meta_file, "--id",srr_id]
+            print " ".join(sra_cmd)
+            subprocess.check_call(sra_cmd)
             with open(meta_file) as f:
                 job_meta = json.load(f)
                 files = job_meta[0].get("files",[])
