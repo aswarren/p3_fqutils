@@ -146,9 +146,9 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             cur_cleanup.append(sam_file)
             bam_file_all=sam_file[:-4]+".all.bam"
             bam_file_aligned=sam_file[:-4]+".aligned.bam"
-            fastq_file_aligned = sam_file[:-4]+".aligned.fastq"
-            fastq_file_aligned1 = sam_file[:-4]+".aligned.1.fastq"
-            fastq_file_aligned2 = sam_file[:-4]+".aligned.2.fastq"
+            fastq_file_aligned = sam_file[:-4]+".aligned.fq"
+            fastq_file_aligned1 = sam_file[:-4]+".aligned.1.fq"
+            fastq_file_aligned2 = sam_file[:-4]+".aligned.2.fq"
             samstat_cmd.append(bam_file_all)
             # r[genome["genome"]]={} # JSP: What does this do? 
             # r[genome["genome"]]["bam"]=bam_file_aligned
@@ -160,15 +160,13 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 subprocess.check_call(cur_cmd) #call bowtie2
             # if not os.path.exists(bam_file_aligned):
                 subprocess.check_call("samtools view -Su "+sam_file+" | samtools sort -o - - > "+bam_file_all, shell=True)#convert to bam
-                subprocess.check_call("samtools index "+bam_file_all, shell=True)
-                subprocess.check_call("samtools view -b -F 4 " + bam_file_all + " > " + bam_file_aligned)
-                subprocess.check_call("samtools bam2fq " + bam_file_aligned " > " +  fastq_file_aligned)
+                subprocess.check_call("samtools index "+bam_file_all, shell=True) # JSP: What does this do?
+                subprocess.check_call("samtools view -b -F 4 " + bam_file_all + " 1> " + bam_file_aligned, shell=True)
+                subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
                 if read2: # paired end
                     cur_cleanup.append(fastq_file_aligned)
-                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/1$' -A 3 --no-group-separator > " + fastq_file_aligned1)
-                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/2$' -A 3 --no-group-separator > " + fastq_file_aligned2)
-                # samtools bam2fq SAMPLE.bam > SAMPLE.fastq
-                #samtools view -b -F 4 file.bam > mapped.bam
+                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/1$' -A 3 --no-group-separator > " + fastq_file_aligned1, shell=True)
+                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/2$' -A 3 --no-group-separator > " + fastq_file_aligned2, shell=True)
                 #subprocess.check_call('samtools view -S -b %s > %s' % (sam_file, bam_file+".tmp"), shell=True)
                 #subprocess.check_call('samtools sort %s %s' % (bam_file+".tmp", bam_file), shell=True)
                 print " ".join(samstat_cmd)
