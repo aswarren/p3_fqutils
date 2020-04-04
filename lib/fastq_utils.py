@@ -166,7 +166,11 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 if read2: # paired end
                     cur_cleanup.append(fastq_file_aligned)
                     subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/1$' -A 3 --no-group-separator > " + fastq_file_aligned1, shell=True)
+                    subprocess.check_call("gzip " + fastq_file_aligned1, shell=True)
                     subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/2$' -A 3 --no-group-separator > " + fastq_file_aligned2, shell=True)
+                    subprocess.check_call("gzip " + fastq_file_aligned2, shell=True)
+                else:
+                    subprocess.check_call("gzip " + fastq_file_aligned, shell=True)
                 #subprocess.check_call('samtools view -S -b %s > %s' % (sam_file, bam_file+".tmp"), shell=True)
                 #subprocess.check_call('samtools sort %s %s' % (bam_file+".tmp", bam_file), shell=True)
                 print " ".join(samstat_cmd)

@@ -1,0 +1,1 @@
+nohup srun -A fungcat -p bii python ./lib/p3-fqutils.py --jfile ./test/baumannii_34654.test_jsp.json -o ./output/  --sstring '{"data_api":"https://www.patricbrc.org/api/"}' &> ./output/test.out &
