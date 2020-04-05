@@ -160,9 +160,9 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 subprocess.check_call(cur_cmd) #call bowtie2
             # if not os.path.exists(bam_file_aligned):
                 subprocess.check_call("samtools view -Su "+sam_file+" | samtools sort -o - - > "+bam_file_all, shell=True)#convert to bam
-                subprocess.check_call("samtools index "+bam_file_all, shell=True) # JSP: What does this do?
                 subprocess.check_call("samtools view -b -F 4 " + bam_file_all + " 1> " + bam_file_aligned, shell=True)
                 subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
+                subprocess.check_call("samtools index "+bam_file_aligned, shell=True) # JSP: What does this do?
                 if read2: # paired end
                     cur_cleanup.append(fastq_file_aligned)
                     subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/1$' -A 3 --no-group-separator > " + fastq_file_aligned1, shell=True)
