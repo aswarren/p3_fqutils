@@ -136,48 +136,40 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 name2=os.path.splitext(os.path.basename(r["read2"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+"_"+name2+".sam")
-                cur_cmd+=["--un-conc-gz",os.path.join(target_dir,name1+"_"+name2+"unmapped%.fq.gz")]
+                cur_cmd+=["--un-conc-gz",os.path.join(target_dir,name1+"_"+name2+".unmapped%.fq.gz")]
                 read2 = True
             else:
                 cur_cmd+=[" -U",link_space(r["read1"])]
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+".sam")
-                cur_cmd+=["--un-gz",os.path.join(target_dir,name1+"unmapped.fq.gz")]
+                cur_cmd+=["--un-gz",os.path.join(target_dir,name1+".unmapped.fq.gz")]
             cur_cleanup.append(sam_file)
-            bam_file = sam_file[:-4]+".bam"
             bam_file_all=sam_file[:-4]+".all.bam"
             bam_file_aligned=sam_file[:-4]+".aligned.bam"
             fastq_file_aligned = sam_file[:-4]+".aligned.fq"
             fastq_file_aligned1 = sam_file[:-4]+".aligned.1.fq"
             fastq_file_aligned2 = sam_file[:-4]+".aligned.2.fq"
             samstat_cmd.append(bam_file_all)
-            # r[genome["genome"]]={} # JSP: What does this do? 
-            # r[genome["genome"]]["bam"]=bam_file_aligned
+            r[genome["genome"]]={} # make bam file information available for subsequent steps 
+            r[genome["genome"]]["bam"]=bam_file_aligned
             cur_cmd+=["-S",sam_file]
             if os.path.exists(bam_file_aligned):
                 sys.stderr.write(bam_file_aligned + " alignments file already exists. skipping\n")
-            if os.path.exists(bam_file):
-                curr_cleanup.append(bam_file)
-            if os.path.exists(bam_file + ".bai"):
-                curr_cleanup.append(bam_file + ".bai")
             else:
                 print cur_cmd
                 subprocess.check_call(cur_cmd) #call bowtie2
-            # if not os.path.exists(bam_file_aligned):
                 subprocess.check_call("samtools view -Su "+sam_file+" | samtools sort -o - - > "+bam_file_all, shell=True)#convert to bam
                 subprocess.check_call("samtools view -b -F 4 " + bam_file_all + " 1> " + bam_file_aligned, shell=True)
-                subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
-                subprocess.check_call("samtools index "+bam_file_aligned, shell=True) # JSP: What does this do?
+                subprocess.check_call("samtools index "+bam_file_aligned, shell=True)
+                bam2fq_cmd=["bedtools","bamtofastq","-i",bam_file_aligned,"-fq",fastq_file_aligned]
+                bam2fqgz_cmd=["gzip",fastq_file_aligned]
+                #subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
                 if read2: # paired end
-                    cur_cleanup.append(fastq_file_aligned)
-                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/1$' -A 3 --no-group-separator > " + fastq_file_aligned1, shell=True)
-                    subprocess.check_call("gzip " + fastq_file_aligned1, shell=True)
-                    subprocess.check_call("cat " + fastq_file_aligned + " | grep '^@.*/2$' -A 3 --no-group-separator > " + fastq_file_aligned2, shell=True)
-                    subprocess.check_call("gzip " + fastq_file_aligned2, shell=True)
-                else:
-                    subprocess.check_call("gzip " + fastq_file_aligned, shell=True)
-                #subprocess.check_call('samtools view -S -b %s > %s' % (sam_file, bam_file+".tmp"), shell=True)
-                #subprocess.check_call('samtools sort %s %s' % (bam_file+".tmp", bam_file), shell=True)
+                    bam2fq_cmd+=["-fq2",fastq_file_aligned2]
+                    bam2fqgz_cmd+=[fastq_file_aligned2]
+                print " ".join(bam2fq_cmd)
+                subprocess.check_call(bam2fq_cmd)
+                subprocess.check_call(bam2fqgz_cmd)
                 print " ".join(samstat_cmd)
                 subprocess.check_call(samstat_cmd)
                 cur_cleanup.append(bam_file_all)
