@@ -144,6 +144,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 sam_file=os.path.join(target_dir,name1+".sam")
                 cur_cmd+=["--un-gz",os.path.join(target_dir,name1+"unmapped.fq.gz")]
             cur_cleanup.append(sam_file)
+            bam_file = sam_file[:-4]+".bam"
             bam_file_all=sam_file[:-4]+".all.bam"
             bam_file_aligned=sam_file[:-4]+".aligned.bam"
             fastq_file_aligned = sam_file[:-4]+".aligned.fq"
@@ -154,7 +155,11 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             # r[genome["genome"]]["bam"]=bam_file_aligned
             cur_cmd+=["-S",sam_file]
             if os.path.exists(bam_file_aligned):
-                sys.stderr.write(bam_file+" alignments file already exists. skipping\n")
+                sys.stderr.write(bam_file_aligned + " alignments file already exists. skipping\n")
+            if os.path.exists(bam_file):
+                curr_cleanup.append(bam_file)
+            if os.path.exists(bam_file + ".bai"):
+                curr_cleanup.append(bam_file + ".bai")
             else:
                 print cur_cmd
                 subprocess.check_call(cur_cmd) #call bowtie2
