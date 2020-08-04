@@ -240,9 +240,11 @@ def setup(job_data, output_dir, tool_params):
                     for i,f in enumerate(files):
                         if f.endswith("_2.fastq.gz"):
                             r["read2"]=os.path.join(target_dir, f)
-                        if f.endswith("_1.fastq.gz"):
+                        elif f.endswith("_1.fastq.gz"):
                             r["read1"]=os.path.join(target_dir, f)
-                        if f.endswith("fastqc.html"):
+                        elif f.endswith(".fastq.gz"):
+                            r["read1"]=os.path.join(target_dir, f)
+                        elif f.endswith("fastqc.html"):
                             r["fastqc"].append(os.path.join(target_dir, f))
     recipe = job_data.get("recipe",[])
     return genome_list, read_list, recipe
