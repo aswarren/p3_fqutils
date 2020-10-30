@@ -42,4 +42,10 @@ https://github.com/marcelm/cutadapt
 
 Trimgalore
 https://github.com/FelixKrueger/TrimGalore
+
+Samtools
+http://www.htslib.org/
+
+HISAT2
+http://daehwankimlab.github.io/hisat2/
 ```

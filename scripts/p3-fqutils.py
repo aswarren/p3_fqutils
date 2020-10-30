@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os, sys, json
 import argparse
 from fastq_utils import run_fq_util
@@ -18,8 +18,8 @@ if __name__ == "__main__":
     parser.add_argument('--index', help='flag for enabling using HISAT2 indices', action='store_true', required=False)
     #parser.add_argument('-L', help='csv list of library names for comparison', required=False)
     #parser.add_argument('-C', help='csv list of comparisons. comparisons are library names separated by percent. ', required=False)
-    parser.add_argument('-p', help='JSON formatted parameter list for info keyed to program', default=None, required=False)
-    parser.add_argument('-o', help='output directory. defaults to current directory.', required=False, default=None)
+    parser.add_argument('-p', help='JSON formatted parameter list for info keyed to program', default='{}', required=False)
+    parser.add_argument('-o', help='output directory. Defaults to current directory.', required=False, default=None)
     if len(sys.argv) ==1:
         parser.print_help()
         sys.exit(2)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     with open(map_args.jfile, 'r') as job_handle:
         job_data = json.load(job_handle)
     server_info = json.loads(map_args.sstring)
-    for k,d in server_info.iteritems():
+    for k,d in server_info.items():
         job_data[k]=d
     if map_args.o == None:
         output_dir="./"
@@ -37,9 +37,9 @@ if __name__ == "__main__":
         output_dir=map_args.o
     job_data["output_path"]=output_dir
     count=0
-    if map_args.p != None and os.path.exists(map_args.p):
-    	tool_params=json.load(open(map_args.p,'r'))
-    else:
+    try:
+        tool_params=json.loads(map_args.p)
+    except json.decoder.JSONDecodeError:
         tool_params={}
-
+    print("Parameters: {}".format(tool_params), file=sys.stdout)
     run_fq_util(job_data,output_dir,tool_params)
