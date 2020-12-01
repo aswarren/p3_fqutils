@@ -2,7 +2,7 @@ import os
 import sys
 import re
 import requests
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -36,7 +36,7 @@ def authenticateByFile(tokenFile=None, Session=None):
 
 
 def authenticateByEnv(Session):
-    if os.environ.has_key("KB_AUTH_TOKEN"):
+    if "KB_AUTH_TOKEN" in os.environ:
         LOG.write("reading auth key from environment\n")
         authenticateByString(os.environ.get('KB_AUTH_TOKEN'), Session)
         return True
@@ -62,7 +62,7 @@ def getGenomeIdsNamesByName(name, limit='10', Session=None):
 def getGenomeGroupIds(genomeGroupName, Session):
     LOG.write("getGenomeGroupIds(%s), PatricUser=%s\n"%(genomeGroupName, PatricUser))
     genomeGroupSpecifier = PatricUser+"/home/Genome Groups/"+genomeGroupName
-    genomeGroupSpecifier = "/"+urllib.quote(genomeGroupSpecifier)
+    genomeGroupSpecifier = "/"+urllib.parse.quote(genomeGroupSpecifier)
     genomeGroupSpecifier = genomeGroupSpecifier.replace("/", "%2f")
     query = "in(genome_id,GenomeGroup("+genomeGroupSpecifier+"))"
     query += "&select(genome_id)"
@@ -147,7 +147,7 @@ def getDataForGenomes(genomeIdSet, fieldNames, Session):
     return(retval)
 
 def getProteinFastaForPatricIds(patricIds, Session):
-    query="in(patric_id,("+",".join(map(urllib.quote, patricIds))+"))"
+    query="in(patric_id,("+",".join(map(urllib.parse.quote, patricIds))+"))"
     query += "&limit(%d)"%len(patricIds)
     response=Session.get(Base_url+"genome_feature/", params=query, headers={'Accept': 'application/protein+fasta'})
     if False and Debug:
@@ -168,7 +168,7 @@ def getProteinFastaForPatricIds(patricIds, Session):
     return idsFixedFasta
     
 def getDnaFastaForPatricIds(patricIds, Session):
-    query="in(patric_id,("+",".join(map(urllib.quote, patricIds))+"))"
+    query="in(patric_id,("+",".join(map(urllib.parse.quote, patricIds))+"))"
     query += "&limit(%d)"%len(patricIds)
     response=Session.get(Base_url+"genome_feature/", params=query, headers={'Accept': 'application/dna+fasta'})
     if False and Debug:

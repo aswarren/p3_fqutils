@@ -27,13 +27,21 @@ def link_space(file_path):
     return result
 
 
-def run_fastqc(read_list, output_dir, job_data):
+def get_param(program, feature, tool_params):
+    if program in tool_params and feature in tool_params[program]:
+        return tool_params[program][feature]
+    return None
+
+
+def run_fastqc(read_list, output_dir, job_data, tool_params):
     rcount=0
+    threads = get_param("fastqc", "-p", tool_params)
+    fastqc_base_cmd=["fastqc", "-t", str(threads) if threads else "1"]
     for r in read_list:
         cur_output=[]
         rcount+=1
         if len(r.get("fastqc",[])) == 0 :
-            fastqc_cmd=["fastqc","--outdir",output_dir]
+            fastqc_cmd=fastqc_base_cmd+["--outdir", output_dir]
             if "read2" in r:
                 fastqc_cmd+=[r["read1"],r["read2"]]
                 r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read1"])+".fastqc.html"))
@@ -41,7 +49,7 @@ def run_fastqc(read_list, output_dir, job_data):
             else:
                 fastqc_cmd+=[r["read1"]]
                 r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read1"])+".fastqc.html"))
-            print " ".join(fastqc_cmd)
+            print((" ".join(fastqc_cmd)))
             subprocess.check_call(fastqc_cmd)
 
 
@@ -53,9 +61,11 @@ def find_prefix(filename):
     return prefix_pos
 
 
-def run_trim(read_list, output_dir, job_data):
+def run_trim(read_list, output_dir, job_data, tool_params):
     rcount=0
     trimmed_reads=[]
+    threads = get_param("trim_galore", "-p", tool_params)
+    trim_base_cmd=["trim_galore", "-j", str(threads) if threads else "1"]
     for r in read_list:
         tr = copy.deepcopy(r)
         tr["fastqc"]=[]
@@ -63,7 +73,7 @@ def run_trim(read_list, output_dir, job_data):
         rename_files={}
         rcount+=1
         #trim_galore --gzip --paired -o ../fonsynbiothr/trimmed_reads/ ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R1_001.fastq ../fonsynbiothr/fastq_files/926M_RNA_S8_L001_R2_001.fastq
-        trim_cmd=["trim_galore","--gzip","-o",output_dir]
+        trim_cmd=trim_base_cmd+["--gzip","-o",output_dir]
         if "read2" in r:
             trim_cmd+=["--paired", r["read1"],r["read2"]]
             pre_pos = find_prefix(r["read1"])
@@ -77,8 +87,7 @@ def run_trim(read_list, output_dir, job_data):
             cur_check.append(old_name)
             new_name=os.path.join(output_dir,".".join(os.path.basename(r["read2"]).split(".")[0:pre_pos])+"_ptrim.fq.gz")
             rename_files[old_name]= new_name
-            tr["read2"]=new_name 
-
+            tr["read2"]=new_name
         else:
             trim_cmd+=[r["read1"]]
             pre_pos = find_prefix(r["read1"])
@@ -87,7 +96,7 @@ def run_trim(read_list, output_dir, job_data):
             new_name=os.path.join(output_dir,".".join(os.path.basename(r["read1"]).split(".")[0:pre_pos])+"_strim.fq.gz")
             rename_files[old_name]= new_name
             tr["read1"]=new_name
-        print " ".join(trim_cmd)
+        print((" ".join(trim_cmd)))
         subprocess.check_call(trim_cmd)
         check_passed = True
         for c in cur_check:
@@ -156,21 +165,22 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             if os.path.exists(bam_file_aligned):
                 sys.stderr.write(bam_file_aligned + " alignments file already exists. skipping\n")
             else:
-                print cur_cmd
+                print(cur_cmd)
                 subprocess.check_call(cur_cmd) #call bowtie2
-                subprocess.check_call("samtools view -Su "+sam_file+" | samtools sort -o - - > "+bam_file_all, shell=True)#convert to bam
-                subprocess.check_call("samtools view -b -F 4 " + bam_file_all + " 1> " + bam_file_aligned, shell=True)
-                subprocess.check_call("samtools index "+bam_file_aligned, shell=True)
+                view_threads = parameters.get("samtools_view",{}).get("-p","1")
+                subprocess.check_call("samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(view_threads, sam_file, bam_file_all), shell=True)#convert to bam
+                subprocess.check_call("samtools view -@ {} -b -F 4 {} 1> {}".format(view_threads, bam_file_all, bam_file_aligned), shell=True)
+                subprocess.check_call("samtools index -@ {} {}".format(parameters.get("samtools_index",{}).get("-p","1"), bam_file_aligned), shell=True)
                 bam2fq_cmd=["bedtools","bamtofastq","-i",bam_file_aligned,"-fq",fastq_file_aligned]
                 bam2fqgz_cmd=["gzip",fastq_file_aligned]
                 #subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
                 if read2: # paired end
                     bam2fq_cmd+=["-fq2",fastq_file_aligned2]
                     bam2fqgz_cmd+=[fastq_file_aligned2]
-                print " ".join(bam2fq_cmd)
+                print((" ".join(bam2fq_cmd)))
                 subprocess.check_call(bam2fq_cmd)
                 subprocess.check_call(bam2fqgz_cmd)
-                print " ".join(samstat_cmd)
+                print((" ".join(samstat_cmd)))
                 subprocess.check_call(samstat_cmd)
                 cur_cleanup.append(bam_file_all)
             for garbage in cur_cleanup:
@@ -182,7 +192,7 @@ def get_genome(parameters):
     target_file = os.path.join(parameters["output_path"],parameters["gid"]+".fna")
     if not os.path.exists(target_file):
         genome_url= "data_url/genome_sequence/?eq(genome_id,gid)&limit(25000)".replace("data_url",parameters["data_api"]).replace("gid",parameters["gid"])
-        print genome_url
+        print(genome_url)
         headers = {"accept":"application/sralign+dna+fasta"}
         #print "switch THE HEADER BACK!"
         #headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}
@@ -192,7 +202,7 @@ def get_genome(parameters):
         #pretty_print_POST(prepared)
         s = requests.Session()
         response=s.send(prepared)
-        handle = open(target_file, 'w')
+        handle = open(target_file, 'wb')
         if not response.ok:
             sys.stderr.write("API not responding. Please try again later.\n")
             sys.exit(2)
@@ -231,7 +241,7 @@ def setup(job_data, output_dir, tool_params):
             srr_id = r["srr_accession"] 
             meta_file = os.path.join(target_dir,srr_id+"_meta.txt")
             sra_cmd = ["p3-sra","--gzip","--out",target_dir,"--metadata-file", meta_file, "--id",srr_id]
-            print " ".join(sra_cmd)
+            print((" ".join(sra_cmd)))
             subprocess.check_call(sra_cmd)
             with open(meta_file) as f:
                 job_meta = json.load(f)
@@ -250,15 +260,12 @@ def setup(job_data, output_dir, tool_params):
     return genome_list, read_list, recipe
 
 
-
-
-
-
-def run_fq_util(job_data, output_dir, tool_params):
+def run_fq_util(job_data, output_dir, tool_params={}):
     #arguments:
     #list of genomes [{"genome":somefile,"annotation":somefile}]
     #dictionary of library dictionaries structured as {libraryname:{library:libraryname, replicates:[{read1:read1file, read2:read2file}]}}
-    #parametrs_file is json parameters list keyed as bowtie, cufflinks, cuffdiff.
+    #parametrs_file is a json keyed parameters list.
+    #Example tool_params: '{"fastqc":{"-p":"2"},"trim_galore":{"-p":"2"},"bowtie2":{"-p":"2"},"hisat2":{"-p":"2"},"samtools_view":{"-p":"2"},"samtools_index":{"-p":"2"}}'
     output_dir=os.path.abspath(output_dir)
     subprocess.call(["mkdir","-p",output_dir])
 
@@ -266,11 +273,9 @@ def run_fq_util(job_data, output_dir, tool_params):
     for step in recipe:
         step=step.upper()
         if step == "TRIM":
-            trimmed_reads = run_trim(read_list, output_dir, job_data)
+            trimmed_reads = run_trim(read_list, output_dir, job_data, tool_params)
             read_list = trimmed_reads
         if step == "FASTQC":
-            run_fastqc(read_list, output_dir, job_data)
+            run_fastqc(read_list, output_dir, job_data, tool_params)
         if step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
-
-
