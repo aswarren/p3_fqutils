@@ -23,6 +23,14 @@ def createTSVGet(api_url=None):
     return Session
 
 
+def getHostManifest(api_url=None):
+    if api_url is None:
+        api_url = "https://patricbrc.org/api/"
+    r = requests.get(api_url + "content/host/patric_host_summary.json")
+    manifest = r.json()
+    return {item["species_taxid"]: item for item in manifest["genomes"]}
+
+
 def authenticateByFile(tokenFile=None, Session=None):
     if not tokenFile:
         tokenFile = os.path.join(os.environ.get('HOME'), ".patric_token")

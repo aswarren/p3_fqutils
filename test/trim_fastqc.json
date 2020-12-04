@@ -1,0 +1,13 @@
+{
+    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_file": "fqutils_parameters",
+    "recipe": [
+        "Trim",
+        "FastQC"
+    ],
+    "single_end_libs": [
+        {
+            "read": "/jsporter@patricbrc.org/home/Test_Files/test.fq"
+        }
+    ]
+}
