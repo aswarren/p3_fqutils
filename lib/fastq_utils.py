@@ -5,7 +5,14 @@ import subprocess
 import multiprocessing
 import tarfile, json
 import requests, copy
-from fqutil_api import authenticateByEnv
+from fqutil_api import authenticateByEnv, getHostManifest
+
+import shutil
+import urllib.request as request
+from contextlib import closing
+
+# Default bowtie2 threads.
+BT2_THREADS = 2
 
 #take genome data structure and make directory names.
 def make_directory_names(genome):
@@ -129,8 +136,8 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             #cmd=["hisat2","--dta-cufflinks", "-x", genome_link, "--no-spliced-alignment"] 
             cmd=["bowtie2", "-x", genome_link]
             thread_count= parameters.get("bowtie2",{}).get("-p",0)
-        if thread_count == 0:
-            thread_count=2 #multiprocessing.cpu_count()
+        if not thread_count:
+            thread_count=BT2_THREADS
         cmd+=["-p",str(thread_count)]
         target_dir=genome['output']
         for r in read_list:
@@ -188,27 +195,37 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
         for garbage in final_cleanup:
             subprocess.call(["rm", garbage])
 
-def get_genome(parameters):
+def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"],parameters["gid"]+".fna")
+    print("GID: {}".format(parameters["gid"]), file=sys.stderr)
     if not os.path.exists(target_file):
-        genome_url= "data_url/genome_sequence/?eq(genome_id,gid)&limit(25000)".replace("data_url",parameters["data_api"]).replace("gid",parameters["gid"])
-        print(genome_url)
-        headers = {"accept":"application/sralign+dna+fasta"}
-        #print "switch THE HEADER BACK!"
-        #headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}
-        req = requests.Request('GET', genome_url, headers=headers)
-        authenticateByEnv(req)
-        prepared = req.prepare()
-        #pretty_print_POST(prepared)
-        s = requests.Session()
-        response=s.send(prepared)
-        handle = open(target_file, 'wb')
-        if not response.ok:
-            sys.stderr.write("API not responding. Please try again later.\n")
-            sys.exit(2)
+        taxid = str(parameters["gid"]).split(".")[0]
+        if taxid in host_manifest:
+            genome_url = host_manifest[taxid]["patric_ftp"] + "_genomic.fna"
+            print(genome_url)
+            with closing(request.urlopen(genome_url)) as r:
+                with open(target_file, 'wb') as f:
+                    shutil.copyfileobj(r, f)
         else:
-            for block in response.iter_content(1024):
-                handle.write(block)
+            genome_url= "{data_api}/genome_sequence/?eq(genome_id,{gid})&limit(25000)".format(**parameters)  # parameters["data_api"], parameters["gid"])
+            headers = {"accept":"application/sralign+dna+fasta"}    
+            req = requests.Request('GET', genome_url, headers=headers)
+            print(genome_url)
+            #print "switch THE HEADER BACK!"
+            #headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}
+            authenticateByEnv(req)
+            prepared = req.prepare()
+            #pretty_print_POST(prepared)
+            s = requests.Session()
+            response=s.send(prepared)
+            handle = open(target_file, 'wb')
+            if not response.ok:
+                sys.stderr.write("API not responding. Please try again later.\n")
+                sys.exit(2)
+            else:
+                for block in response.iter_content(1024):
+                    handle.write(block)
+    sys.stdout.flush()
     return target_file
 
 
@@ -217,16 +234,17 @@ def setup(job_data, output_dir, tool_params):
     ref_id = job_data.get("reference_genome_id",None)
     if ref_id != None:
         genome_ids.append(ref_id)
+    if genome_ids:
+        manifest = getHostManifest()
     genome_list=[]
     for gid in genome_ids:
         genome={}
         job_data["gid"]=gid #cheat. this will need expansion if you want to support multiple genomes
-        genome["genome_link"]=get_genome(job_data)
+        genome["genome_link"]=get_genome(job_data, manifest)
         genome["gid"]=gid
         genome["genome"]=gid
         genome["output"]=output_dir
         genome_list.append(genome)
-
     read_list = []
     rcount=0
     for r in job_data.get("paired_end_libs",[])+job_data.get("single_end_libs",[])+job_data.get("srr_libs",[]):
@@ -268,7 +286,6 @@ def run_fq_util(job_data, output_dir, tool_params={}):
     #Example tool_params: '{"fastqc":{"-p":"2"},"trim_galore":{"-p":"2"},"bowtie2":{"-p":"2"},"hisat2":{"-p":"2"},"samtools_view":{"-p":"2"},"samtools_index":{"-p":"2"}}'
     output_dir=os.path.abspath(output_dir)
     subprocess.call(["mkdir","-p",output_dir])
-
     genome_list, read_list, recipe=setup(job_data, output_dir, tool_params)
     for step in recipe:
         step=step.upper()
