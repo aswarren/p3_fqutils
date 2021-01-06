@@ -26,21 +26,21 @@ deploy-client: deploy-scripts deploy-libs
 deploy-service: deploy-libs deploy-scripts deploy-service-scripts deploy-specs
 
 deploy-specs:
-        mkdir -p $(TARGET)/services/$(APP_SERVICE)
-        rsync -arv app_specs $(TARGET)/services/$(APP_SERVICE)/.
+	mkdir -p $(TARGET)/services/$(APP_SERVICE)
+	rsync -arv app_specs $(TARGET)/services/$(APP_SERVICE)/.
 
 deploy-dir:
-        if [ ! -d $(SERVICE_DIR) ] ; then mkdir $(SERVICE_DIR) ; fi
-        if [ ! -d $(SERVICE_DIR)/bin ] ; then mkdir $(SERVICE_DIR)/bin ; fi
+	if [ ! -d $(SERVICE_DIR) ] ; then mkdir $(SERVICE_DIR) ; fi
+	if [ ! -d $(SERVICE_DIR)/bin ] ; then mkdir $(SERVICE_DIR)/bin ; fi
 
 deploy-docs:
 
 clean:
 
 $(BIN_DIR)/%: service-scripts/%.pl $(TOP_DIR)/user-env.sh
-        $(WRAP_PERL_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@
+	$(WRAP_PERL_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@
 
 $(BIN_DIR)/%: service-scripts/%.py $(TOP_DIR)/user-env.sh
-        $(WRAP_PYTHON_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@ ] ]
+	$(WRAP_PYTHON_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@
 
 include $(TOP_DIR)/tools/Makefile.common.rules
