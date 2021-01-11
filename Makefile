@@ -17,13 +17,25 @@ DEPLOY_SERVICE_PERL = $(addprefix $(SERVICE_DIR)/bin/,$(basename $(notdir $(SRC_
 
 all: bin
 
-bin: $(BIN_PYTHON)
+bin: $(BIN_PYTHON) $(BIN_SERVICE_PERL)
 
 deploy: deploy-client
 deploy-all: deploy-client
 deploy-client: deploy-scripts deploy-libs
 
 deploy-service: deploy-libs deploy-scripts deploy-service-scripts deploy-specs
+
+deploy-service-scripts:
+	export KB_TOP=$(TARGET); \
+	export KB_RUNTIME=$(DEPLOY_RUNTIME); \
+	export KB_PERL_PATH=$(TARGET)/lib ; \
+	for src in $(SRC_SERVICE_PERL) ; do \
+	        basefile=`basename $$src`; \
+	        base=`basename $$src .pl`; \
+	        echo install $$src $$base ; \
+	        cp $$src $(TARGET)/plbin ; \
+	        $(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/bin/$$base ; \
+	done
 
 deploy-specs:
 	mkdir -p $(TARGET)/services/$(APP_SERVICE)
