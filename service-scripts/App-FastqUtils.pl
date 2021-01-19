@@ -128,6 +128,8 @@ sub process_fastq
 
     my @output_suffixes = ([qr/\.bam$/, "bam"],
 			   [qr/\.fq\.gz$/, "reads"],
+			   [qr/\.fq\.1.gz$/, "reads"],
+			   [qr/\.fq\.2.gz$/, "reads"],
 			   [qr/\.bai$/, "bai"],
 			   [qr/\.html$/, "html"],
 			   [qr/\.fastq\.gz$/, "reads"],
