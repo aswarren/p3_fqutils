@@ -1,0 +1,14 @@
+{
+    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_file": "SRA_fqutils_dummy",
+    "reference_genome_id": "36870.6",
+    "recipe": [
+        "FastQC",
+        "Align"
+    ],
+    "srr_libs": [
+        {
+            "srr_accession": "SRR5590065"
+        }
+    ]
+}

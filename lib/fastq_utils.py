@@ -30,7 +30,7 @@ def link_space(file_path):
         clean_name=name.replace(" ","")
         result= file_path.replace(name,clean_name)
         if not os.path.exists(result):
-            subprocess.check_call(["ln","-s",file_path,result])
+            subprocess.run(["ln","-s",file_path,result], check=True)
     return result
 
 
@@ -57,7 +57,7 @@ def run_fastqc(read_list, output_dir, job_data, tool_params):
                 fastqc_cmd+=[r["read1"]]
                 r["fastqc"].append(os.path.join(output_dir, os.path.basename(r["read1"])+".fastqc.html"))
             print((" ".join(fastqc_cmd)))
-            subprocess.check_call(fastqc_cmd)
+            subprocess.run(fastqc_cmd, check=True)
 
 
 def find_prefix(filename):
@@ -104,7 +104,7 @@ def run_trim(read_list, output_dir, job_data, tool_params):
             rename_files[old_name]= new_name
             tr["read1"]=new_name
         print((" ".join(trim_cmd)))
-        subprocess.check_call(trim_cmd)
+        subprocess.run(trim_cmd, check=True)
         check_passed = True
         for c in cur_check:
             check_passed = check_passed and os.path.exists(c)
@@ -127,12 +127,12 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             final_cleanup+=indices
             #archive.extractall(path=output_dir)
             archive.close()
-            subprocess.check_call(["tar","-xvf", genome["hisat_index"], "-C", output_dir])
+            subprocess.run(["tar","-xvf", genome["hisat_index"], "-C", output_dir], check=True)
             index_prefix = os.path.join(output_dir, os.path.basename(genome["hisat_index"]).replace(".ht2.tar","")) #somewhat fragile convention. tar prefix is underlying index prefix
             cmd=["hisat2","--dta-cufflinks", "-x", index_prefix] 
             thread_count= parameters.get("hisat2",{}).get("-p",0)
         else:
-            subprocess.check_call(["bowtie2-build", genome_link, genome_link])
+            subprocess.run(["bowtie2-build", genome_link, genome_link], check=True)
             #cmd=["hisat2","--dta-cufflinks", "-x", genome_link, "--no-spliced-alignment"] 
             cmd=["bowtie2", "-x", genome_link]
             thread_count= parameters.get("bowtie2",{}).get("-p",0)
@@ -148,14 +148,14 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             cur_cmd=list(cmd)
             read2 = False
             if "read2" in r:
-                cur_cmd+=["-1",link_space(r["read1"])," -2",link_space(r["read2"])]
+                cur_cmd+=["-1",link_space(r["read1"]),"-2",link_space(r["read2"])]
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 name2=os.path.splitext(os.path.basename(r["read2"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+"_"+name2+".sam")
-                cur_cmd+=["--un-conc-gz",os.path.join(target_dir,name1+"_"+name2+".unmapped%.fq.gz")]
+                cur_cmd+=["--un-conc-gz",os.path.join(target_dir,name1+"_"+name2+".unmapped.fq.gz")]
                 read2 = True
             else:
-                cur_cmd+=[" -U",link_space(r["read1"])]
+                cur_cmd+=["-U",link_space(r["read1"])]
                 name1=os.path.splitext(os.path.basename(r["read1"]))[0].replace(" ","")
                 sam_file=os.path.join(target_dir,name1+".sam")
                 cur_cmd+=["--un-gz",os.path.join(target_dir,name1+".unmapped.fq.gz")]
@@ -173,22 +173,22 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 sys.stderr.write(bam_file_aligned + " alignments file already exists. skipping\n")
             else:
                 print(cur_cmd)
-                subprocess.check_call(cur_cmd) #call bowtie2
+                subprocess.run(cur_cmd, check=True) #call bowtie2
                 view_threads = parameters.get("samtools_view",{}).get("-p","1")
-                subprocess.check_call("samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(view_threads, sam_file, bam_file_all), shell=True)#convert to bam
-                subprocess.check_call("samtools view -@ {} -b -F 4 {} 1> {}".format(view_threads, bam_file_all, bam_file_aligned), shell=True)
-                subprocess.check_call("samtools index -@ {} {}".format(parameters.get("samtools_index",{}).get("-p","1"), bam_file_aligned), shell=True)
+                subprocess.run("samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(view_threads, sam_file, bam_file_all), shell=True, check=True)#convert to bam
+                subprocess.run("samtools view -@ {} -b -F 4 {} 1> {}".format(view_threads, bam_file_all, bam_file_aligned), shell=True, check=True)
+                subprocess.run("samtools index -@ {} {}".format(parameters.get("samtools_index",{}).get("-p","1"), bam_file_aligned), shell=True, check=True)
                 bam2fq_cmd=["bedtools","bamtofastq","-i",bam_file_aligned,"-fq",fastq_file_aligned]
                 bam2fqgz_cmd=["gzip",fastq_file_aligned]
-                #subprocess.check_call("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True)
+                #subprocess.run("samtools bam2fq " + bam_file_aligned + " 1> " +  fastq_file_aligned, shell=True, check=True)
                 if read2: # paired end
                     bam2fq_cmd+=["-fq2",fastq_file_aligned2]
                     bam2fqgz_cmd+=[fastq_file_aligned2]
                 print((" ".join(bam2fq_cmd)))
-                subprocess.check_call(bam2fq_cmd)
-                subprocess.check_call(bam2fqgz_cmd)
+                subprocess.run(bam2fq_cmd, check=True)
+                subprocess.run(bam2fqgz_cmd, check=True)
                 print((" ".join(samstat_cmd)))
-                subprocess.check_call(samstat_cmd)
+                subprocess.run(samstat_cmd, check=True)
                 cur_cleanup.append(bam_file_all)
             for garbage in cur_cleanup:
                 subprocess.call(["rm", garbage])
@@ -258,19 +258,19 @@ def setup(job_data, output_dir, tool_params):
         if "srr_accession" in r:
             srr_id = r["srr_accession"] 
             meta_file = os.path.join(target_dir,srr_id+"_meta.txt")
-            sra_cmd = ["p3-sra","--gzip","--out",target_dir,"--metadata-file", meta_file, "--id",srr_id]
+            sra_cmd = ["p3-sra","--out",target_dir,"--metadata-file", meta_file, "--id",srr_id]
             print((" ".join(sra_cmd)))
-            subprocess.check_call(sra_cmd)
+            subprocess.run(sra_cmd, check=True)
             with open(meta_file) as f:
                 job_meta = json.load(f)
                 files = job_meta[0].get("files",[])
                 if len(files) > 0:
                     for i,f in enumerate(files):
-                        if f.endswith("_2.fastq.gz"):
+                        if f.endswith("_2.fastq"):
                             r["read2"]=os.path.join(target_dir, f)
-                        elif f.endswith("_1.fastq.gz"):
+                        elif f.endswith("_1.fastq"):
                             r["read1"]=os.path.join(target_dir, f)
-                        elif f.endswith(".fastq.gz"):
+                        elif f.endswith(".fastq"):
                             r["read1"]=os.path.join(target_dir, f)
                         elif f.endswith("fastqc.html"):
                             r["fastqc"].append(os.path.join(target_dir, f))
@@ -287,6 +287,8 @@ def run_fq_util(job_data, output_dir, tool_params={}):
     output_dir=os.path.abspath(output_dir)
     subprocess.call(["mkdir","-p",output_dir])
     genome_list, read_list, recipe=setup(job_data, output_dir, tool_params)
+    # print("genome_list: {}\nread_list: {}\nrecipe: {}".format(genome_list, read_list, recipe), file=sys.stdout)
+    # sys.stdout.flush()
     for step in recipe:
         step=step.upper()
         if step == "TRIM":
