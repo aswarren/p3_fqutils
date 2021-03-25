@@ -3,7 +3,9 @@
   "label": "Fastq Utilites",
   "script": "App-FastqUtils",
   "description": "Useful common processing of fastq files",
-  "default_memory": "100G",
+    "default_memory": "10G",
+    "default_cpu": 2,
+    "default_runtime": 36000,
   "parameters": [
     {
         "id": "reference_genome_id",
