@@ -4,6 +4,7 @@
 
 use Bio::KBase::AppService::AppScript;
 use Bio::KBase::AppService::AppConfig;
+use Bio::KBase::AppService::ReadSet;
 
 use strict;
 use Data::Dumper;
@@ -15,11 +16,56 @@ use IPC::Run qw(run);
 use Cwd;
 use Clone;
 
-my $script = Bio::KBase::AppService::AppScript->new(\&process_fastq);
+my $script = Bio::KBase::AppService::AppScript->new(\&process_fastq, \&preflight);
 
 my $rc = $script->run(\@ARGV);
 
 exit $rc;
+
+sub preflight
+{
+    my($app, $app_def, $raw_params, $params) = @_;
+
+    print STDERR "preflight fastqc ", Dumper($params, $app);
+
+    my $token = $app->token();
+    my $ws = $app->workspace();
+
+    my $readset;
+    eval {
+	$readset = Bio::KBase::AppService::ReadSet->create_from_asssembly_params($params);
+    };
+    if ($@)
+    {
+	die "Error parsing assembly parameters: $@";
+    }
+
+    my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($ws);
+
+    if (!$ok)
+    {
+	die "Reads as defined in parameters failed to validate. Errors:\n\t" . join("\n\t", @$errs);
+    }
+    print STDERR "comp=$comp_size uncomp=$uncomp_size\n";
+
+    my $est_uncomp = $comp_size / 0.75 + $uncomp_size;
+
+    my $est_time = int($est_uncomp * 1e-6);
+
+    #
+    # We just fix the cpu and ram
+    #
+    my $est_cpu = 2;
+
+    my $est_ram = $est_time > 3600 ? '128G' : '32G';
+
+    return {
+	cpu => $est_cpu,
+	memory => $est_ram,
+	runtime => $est_time,
+    };
+}
+
 
 sub process_fastq
 {
