@@ -50,12 +50,16 @@ sub preflight
 
     my $est_uncomp = $comp_size / 0.75 + $uncomp_size;
 
-    my $est_time = int($est_uncomp * 1e-6 * 1.5);
+    my $est_time = int($est_uncomp * 1e-6 * 3.0);
 
     my $est_cpu = 8;
     my $est_ram = '32G';
 
-    if ($est_time > 3600)
+    if ($est_time < 3600)
+    {
+	$est_time = 3600;
+    }
+    elsif ($est_time > 3600 * 2)
     {
 	$est_ram = '128G';
     }
