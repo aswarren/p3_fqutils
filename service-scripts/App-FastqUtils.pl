@@ -166,7 +166,13 @@ sub process_fastq
 	samtools_index => {-p => $parallel}
     };
 
-    my @cmd = ("p3-fqutils", "--jfile", $jdesc, "--sstring", $sstring, "-p", encode_json($override), "-o", $work_dir);
+    my @cmd = ("p3-fqutils",
+	       "--jfile", $jdesc,
+	       "--sstring", $sstring,
+	       "-p", encode_json($override),
+	       "-o", $work_dir,
+	       ">", "$work_dir/fqutils.out.txt",
+	       "2>", "$work_dir/fqutils.err.txt");
 
     warn Dumper(\@cmd, $params_to_app);
     
