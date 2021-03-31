@@ -170,13 +170,13 @@ sub process_fastq
 	       "--jfile", $jdesc,
 	       "--sstring", $sstring,
 	       "-p", encode_json($override),
-	       "-o", $work_dir,
-	       ">", "$work_dir/fqutils.out.txt",
-	       "2>", "$work_dir/fqutils.err.txt");
+	       "-o", $work_dir);
 
     warn Dumper(\@cmd, $params_to_app);
     
-    my $ok = run(\@cmd);
+    my $ok = run(\@cmd,
+		 ">", "$work_dir/fqutils.out.txt",
+		 "2>", "$work_dir/fqutils.err.txt");
     if (!$ok)
     {
 	die "Command failed: @cmd\n";
