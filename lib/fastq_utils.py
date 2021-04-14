@@ -431,7 +431,6 @@ def setup(job_data, output_dir, tool_params):
                         elif f.endswith("fastqc.html"):
                             r["fastqc"].append(os.path.join(target_dir, f))
     recipe = job_data.get("recipe", [])
-    read_list = paired_filter(read_list, tool_params, output_dir, job_data)
     return genome_list, read_list, recipe
 
 
@@ -451,7 +450,11 @@ def run_fq_util(job_data, output_dir, tool_params={}):
         if step == "TRIM":
             trimmed_reads = run_trim(read_list, output_dir, job_data, tool_params)
             read_list = trimmed_reads
-        if step == "FASTQC":
+        elif step == "PAIRED_FILTER":
+            read_list = paired_filter(read_list, tool_params, output_dir, job_data)
+        elif step == "FASTQC":
             run_fastqc(read_list, output_dir, job_data, tool_params)
-        if step == "ALIGN":
+        elif step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
+        else:
+            print("Skipping step. Not found: {}".format(step), file=sys.stderr)
