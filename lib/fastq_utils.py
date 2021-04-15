@@ -322,14 +322,15 @@ def paired_filter(read_list, parameters, output_dir, job_data):
             return path[0 : len(path) - 3]
         return path
 
+    print("Running paired filter.")
     for r in read_list:
         if "read2" in r:
             r["read1"] = unzip(unzip(r["read1"]))
             r["read2"] = unzip(unzip(r["read2"]))
             pair_cmd = ["fastq_pair", r["read1"], r["read2"]]
             subprocess.call(pair_cmd)
-            r["read1"] += "paired.fq"
-            r["read2"] += "paired.fq"
+            r["read1"] += ".paired.fq"
+            r["read2"] += ".paired.fq"
     return read_list
 
 
