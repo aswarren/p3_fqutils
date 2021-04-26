@@ -315,6 +315,25 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             subprocess.call(["rm", garbage])
 
 
+def paired_filter(read_list, parameters, output_dir, job_data):
+    def unzip(path):
+        if path.endswith(".gz"):
+            subprocess.call(["gunzip", path])
+            return path[0 : len(path) - 3]
+        return path
+
+    print("Running paired filter.")
+    for r in read_list:
+        if "read2" in r:
+            r["read1"] = unzip(unzip(r["read1"]))
+            r["read2"] = unzip(unzip(r["read2"]))
+            pair_cmd = ["fastq_pair", r["read1"], r["read2"]]
+            subprocess.call(pair_cmd)
+            r["read1"] += ".paired.fq"
+            r["read2"] += ".paired.fq"
+    return read_list
+
+
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")
     print("GID: {}".format(parameters["gid"]), file=sys.stderr)
@@ -328,8 +347,10 @@ def get_genome(parameters, host_manifest={}):
                     shutil.copyfileobj(r, f)
         else:
             # parameters["data_api"], parameters["gid"])
-            genome_url = "{data_api}/genome_sequence/?eq(genome_id,{gid})&limit(25000)".format(
-                **parameters
+            genome_url = (
+                "{data_api}/genome_sequence/?eq(genome_id,{gid})&limit(25000)".format(
+                    **parameters
+                )
             )
             headers = {"accept": "application/sralign+dna+fasta"}
             req = requests.Request("GET", genome_url, headers=headers)
@@ -430,7 +451,11 @@ def run_fq_util(job_data, output_dir, tool_params={}):
         if step == "TRIM":
             trimmed_reads = run_trim(read_list, output_dir, job_data, tool_params)
             read_list = trimmed_reads
-        if step == "FASTQC":
+        elif step == "PAIRED_FILTER":
+            read_list = paired_filter(read_list, tool_params, output_dir, job_data)
+        elif step == "FASTQC":
             run_fastqc(read_list, output_dir, job_data, tool_params)
-        if step == "ALIGN":
+        elif step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
+        else:
+            print("Skipping step. Not found: {}".format(step), file=sys.stderr)
