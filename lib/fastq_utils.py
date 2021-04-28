@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import gzip
 import json
 import multiprocessing
 import os
@@ -11,6 +12,7 @@ import sys
 import tarfile
 import urllib.request as request
 from contextlib import closing
+from multiprocessing import Process
 
 import requests
 
@@ -315,18 +317,25 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             subprocess.call(["rm", garbage])
 
 
-def paired_filter(read_list, parameters, output_dir, job_data):
-    def unzip(path):
-        if path.endswith(".gz"):
-            subprocess.call(["gunzip", path])
-            return path[0 : len(path) - 3]
-        return path
+def unzip(path):
+    if path.endswith(".gz"):
+        subprocess.call(["gunzip", path])
+        return path[0 : len(path) - 3]
+    return path
 
+
+def paired_filter(read_list, parameters, output_dir, job_data):
     print("Running paired filter.")
     for r in read_list:
         if "read2" in r:
-            r["read1"] = unzip(unzip(r["read1"]))
-            r["read2"] = unzip(unzip(r["read2"]))
+            p1 = Process(target=unzip, args=(r["read1"],))
+            p2 = Process(target=unzip, args=(r["read2"],))
+            p1.start()
+            p2.start()
+            p1.join()
+            p2.join()
+            # r["read1"] = unzip(r["read1"])
+            # r["read2"] = unzip(r["read2"])
             pair_cmd = ["fastq_pair", r["read1"], r["read2"]]
             subprocess.call(pair_cmd)
             r["read1"] += ".paired.fq"
@@ -435,6 +444,12 @@ def setup(job_data, output_dir, tool_params):
     return genome_list, read_list, recipe
 
 
+def gzipMove(source, dest):
+    with open(source, "rb") as f_in:
+        with gzip.open(dest, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
+
+
 def run_fq_util(job_data, output_dir, tool_params={}):
     # arguments:
     # list of genomes [{"genome":somefile,"annotation":somefile}]
@@ -459,3 +474,14 @@ def run_fq_util(job_data, output_dir, tool_params={}):
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
         else:
             print("Skipping step. Not found: {}".format(step), file=sys.stderr)
+    if len(recipe) == 1 and recipe[0] == "PAIRED_FILTER":
+        for r in read_list:
+            if "read2" in r:
+                dest1 = os.path.join(output_dir, os.path.basename(r["read1"]) + ".gz")
+                dest2 = os.path.join(output_dir, os.path.basename(r["read2"]) + ".gz")
+                p1 = Process(target=gzipMove, args=(r["read1"], dest1))
+                p2 = Process(target=gzipMove, args=(r["read2"], dest2))
+                p1.start()
+                p2.start()
+                p1.join()
+                p2.join()
