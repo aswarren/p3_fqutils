@@ -317,25 +317,26 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             subprocess.call(["rm", garbage])
 
 
-def unzip(path):
+def unzip(path, value):
     if path.endswith(".gz"):
         subprocess.call(["gunzip", path])
-        return path[0 : len(path) - 3]
-    return path
+        value.value = 3
 
 
 def paired_filter(read_list, parameters, output_dir, job_data):
     print("Running paired filter.")
     for r in read_list:
         if "read2" in r:
-            p1 = Process(target=unzip, args=(r["read1"],))
-            p2 = Process(target=unzip, args=(r["read2"],))
+            value1 = multiprocessing.Value("i", 0, lock=False)
+            value2 = multiprocessing.Value("i", 0, lock=False)
+            p1 = Process(target=unzip, args=(r["read1"], value1))
+            p2 = Process(target=unzip, args=(r["read2"], value2))
             p1.start()
             p2.start()
             p1.join()
             p2.join()
-            # r["read1"] = unzip(r["read1"])
-            # r["read2"] = unzip(r["read2"])
+            r["read1"] = r["read1"][0 : len(r["read1"]) - value1.value]
+            r["read2"] = r["read2"][0 : len(r["read2"]) - value2.value]
             pair_cmd = ["fastq_pair", r["read1"], r["read2"]]
             subprocess.call(pair_cmd)
             r["read1"] += ".paired.fq"
@@ -474,7 +475,7 @@ def run_fq_util(job_data, output_dir, tool_params={}):
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
         else:
             print("Skipping step. Not found: {}".format(step), file=sys.stderr)
-    if len(recipe) == 1 and recipe[0] == "PAIRED_FILTER":
+    if len(recipe) == 1 and recipe[0].upper() == "PAIRED_FILTER":
         for r in read_list:
             if "read2" in r:
                 dest1 = os.path.join(output_dir, os.path.basename(r["read1"]) + ".gz")
