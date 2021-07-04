@@ -135,7 +135,7 @@ sub process_fastq
            }
         }
     }
-              
+
     my $staged = {};
     if (@to_stage)
     {
@@ -147,7 +147,7 @@ sub process_fastq
 	    $$path_ref = $staged_file;
 	}
     }
-    
+
     #
     # Write job description.
     #
@@ -155,7 +155,7 @@ sub process_fastq
     open(JDESC, ">", $jdesc) or die "Cannot write $jdesc: $!";
     print JDESC JSON::XS->new->pretty(1)->encode($params_to_app);
     close(JDESC);
-    
+
     my $parallel = $ENV{P3_ALLOCATED_CPU};
     my $override = {
 	fastqc => { -p => $parallel},
@@ -173,15 +173,21 @@ sub process_fastq
 	       "-o", $work_dir);
 
     warn Dumper(\@cmd, $params_to_app);
-    
+
     my $ok = run(\@cmd,
 		 ">", "$work_dir/fqutils.out.txt",
 		 "2>", "$work_dir/fqutils.err.txt");
     if (!$ok)
     {
-	die "Command failed: @cmd\n";
+        opendir(D, $work_dir) or die "Cannot opendir $work_dir: $!";
+        $app->workspace->save_file_to_file("$work_dir/fqutils.out.txt", {}, "$output_folder/fqutils.out.txt", "txt", 1,
+                            (-s "$work_dir/fqutils.out.txt" > 10_000 ? 1 : 0), # use shock for larger files
+                            $token);
+        $app->workspace->save_file_to_file("$work_dir/fqutils.err.txt", {}, "$output_folder/fqutils.err.txt", "txt", 1,
+        (-s "$work_dir/fqutils.err.txt" > 10_000 ? 1 : 0), # use shock for larger files
+        $token);
+	    die "Command failed: @cmd\n";
     }
-
 
     my @output_suffixes = ([qr/\.bam$/, "bam"],
 			   [qr/\.fq\.gz$/, "reads"],
@@ -206,7 +212,7 @@ sub process_fastq
  	    	$output=0;
 		my $path = "$output_folder/$file";
 		my $type = $suf->[1];
-		
+
 		$app->workspace->save_file_to_file("$work_dir/$file", {}, "$output_folder/$file", $type, 1,
 					       (-s "$work_dir/$file" > 10_000 ? 1 : 0), # use shock for larger files
 					       $token);

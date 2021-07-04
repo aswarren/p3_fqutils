@@ -228,6 +228,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             cur_cleanup.append(sam_file)
             bam_file_all = sam_file[:-4] + ".all.bam"
             bam_file_aligned = sam_file[:-4] + ".aligned.bam"
+            bam_file_sort_name = sam_file[:-4] + ".aligned.name.bam"
             fastq_file_aligned = sam_file[:-4] + ".aligned.fq"
             # fastq_file_aligned1 = sam_file[:-4] + ".aligned.1.fq"
             fastq_file_aligned2 = sam_file[:-4] + ".aligned.2.fq"
@@ -266,11 +267,18 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     shell=True,
                     check=True,
                 )
+                sort_name_cmd = [
+                    "samtools",
+                    "sort",
+                    "-n",
+                    bam_file_aligned,
+                    bam_file_sort_name,
+                ]
                 bam2fq_cmd = [
                     "bedtools",
                     "bamtofastq",
                     "-i",
-                    bam_file_aligned,
+                    bam_file_sort_name,
                     "-fq",
                     fastq_file_aligned,
                 ]
@@ -279,6 +287,9 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 if read2:  # paired end
                     bam2fq_cmd += ["-fq2", fastq_file_aligned2]
                     bam2fqgz_cmd += [fastq_file_aligned2]
+                print(" ".join(sort_name_cmd))
+                # Need to sort by name to convert to fastq: samtools sort -n myBamFile.bam myBamFile.sortedByName
+                subprocess.run(sort_name_cmd, check=True)
                 print((" ".join(bam2fq_cmd)))
                 subprocess.run(bam2fq_cmd, check=True)
                 subprocess.run(bam2fqgz_cmd, check=True)
