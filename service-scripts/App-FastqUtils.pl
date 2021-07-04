@@ -174,18 +174,19 @@ sub process_fastq
 
     warn Dumper(\@cmd, $params_to_app);
 
-    my $ok = run(\@cmd,
-		 ">", "$work_dir/fqutils.out.txt",
-		 "2>", "$work_dir/fqutils.err.txt");
+    my $ok = run(\@cmd);
+    # my $ok = run(\@cmd,
+	# 	 ">", "$work_dir/fqutils.out.txt",
+	# 	 "2>", "$work_dir/fqutils.err.txt");
     if (!$ok)
     {
-        opendir(D, $work_dir) or die "Cannot opendir $work_dir: $!";
-        $app->workspace->save_file_to_file("$work_dir/fqutils.out.txt", {}, "$output_folder/fqutils.out.txt", "txt", 1,
-                            (-s "$work_dir/fqutils.out.txt" > 10_000 ? 1 : 0), # use shock for larger files
-                            $token);
-        $app->workspace->save_file_to_file("$work_dir/fqutils.err.txt", {}, "$output_folder/fqutils.err.txt", "txt", 1,
-        (-s "$work_dir/fqutils.err.txt" > 10_000 ? 1 : 0), # use shock for larger files
-        $token);
+        # opendir(D, $work_dir) or die "Cannot opendir $work_dir: $!";
+        # $app->workspace->save_file_to_file("$work_dir/fqutils.out.txt", {}, "$output_folder/fqutils.out.txt", "txt", 1,
+        #                     (-s "$work_dir/fqutils.out.txt" > 10_000 ? 1 : 0), # use shock for larger files
+        #                     $token);
+        # $app->workspace->save_file_to_file("$work_dir/fqutils.err.txt", {}, "$output_folder/fqutils.err.txt", "txt", 1,
+        # (-s "$work_dir/fqutils.err.txt" > 10_000 ? 1 : 0), # use shock for larger files
+        # $token);
 	    die "Command failed: @cmd\n";
     }
 
