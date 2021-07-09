@@ -249,14 +249,14 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     view_threads = SAM_THREADS
                 subprocess.run(
                     "samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(
-                        view_threads, sam_file, bam_file_all
+                        str(view_threads), sam_file, bam_file_all
                     ),
                     shell=True,
                     check=True,
                 )  # convert to bam
                 subprocess.run(
                     "samtools view -@ {} -b -F 4 {} 1> {}".format(
-                        view_threads, bam_file_all, bam_file_aligned
+                        str(view_threads), bam_file_all, bam_file_aligned
                     ),
                     shell=True,
                     check=True,
@@ -269,7 +269,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     "sort",
                     "-n",
                     "-@",
-                    sam_sort,
+                    str(sam_sort),
                     bam_file_aligned,
                 ]
                 bam2fq_cmd = [
@@ -290,6 +290,14 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 subprocess.run(
                     sort_name_cmd, check=True, stdout=open(bam_file_sort_name, "w")
                 )
+                cur_cleanup.append(bam_file_sort_name)
+                print((" ".join(bam2fq_cmd)))
+                with open(os.path.join(target_dir, "bedtools.log.txt"), "a") as fd:
+                    print("Redirecting bedtools stderr to a log.", file=sys.stderr)
+                    print(bam_file_sort_name, file=fd)
+                    fd.flush()
+                    subprocess.run(bam2fq_cmd, check=True, stderr=fd)
+                subprocess.run(bam2fqgz_cmd, check=True)
                 samtools_index_threads = parameters.get("samtools_index", {}).get(
                     "-p", "1"
                 )
@@ -297,19 +305,12 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     samtools_index_threads = SAM_THREADS
                 subprocess.run(
                     "samtools index -@ {} {}".format(
-                        samtools_index_threads,
-                        bam_file_sort_name,
+                        str(samtools_index_threads),
+                        bam_file_aligned,
                     ),
                     shell=True,
                     check=True,
                 )
-                final_cleanup.append(bam_file_aligned)
-                print((" ".join(bam2fq_cmd)))
-                with open(os.path.join(target_dir, "bedtools.log.txt"), "a") as fd:
-                    print("Redirecting bedtools stderr to a log file.", file=sys.stderr)
-                    print(bam_file_sort_name, file=fd)
-                    subprocess.run(bam2fq_cmd, check=True, stderr=fd)
-                subprocess.run(bam2fqgz_cmd, check=True)
                 print((" ".join(samstat_cmd)))
                 subprocess.run(samstat_cmd, check=True)
                 cur_cleanup.append(bam_file_all)
