@@ -1,0 +1,14 @@
+{
+    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_file": "fqutils_output",
+    "reference_genome_id": "93061.5",
+    "paired_end_libs": [
+        {
+                    "read1": "/jsporter@patricbrc.org/home/Test_Files/331_S13_L001_R1_001.fastq",
+                    "read2": "/jsporter@patricbrc.org/home/Test_Files/331_S13_L001_R2_001.fastq"
+                }
+    ],
+    "recipe": [
+        "Align"
+    ]
+}

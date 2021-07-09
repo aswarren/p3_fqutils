@@ -1,0 +1,13 @@
+{
+    "output_path": "/jsporter@patricbrc.org/JSP_debug/lfpantojad22",
+    "output_file": "TS1_Trim",
+    "paired_end_libs": [
+        {
+	            "read1": "/jsporter@patricbrc.org/JSP_debug/lfpantojad22/TS1.IS350_Clean.1 (5).fq",
+	            "read2": "/jsporter@patricbrc.org/JSP_debug/lfpantojad22/TS1.IS350_Clean.2 (1).fq"
+	        }
+    ],
+    "recipe": [
+        "Trim"
+    ]
+}

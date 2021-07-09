@@ -20,7 +20,7 @@ from fqutil_api import authenticateByEnv, getHostManifest
 
 # Default bowtie2 threads.
 BT2_THREADS = 2
-
+SAM_THREADS = 1
 # hisat2 has problems with spaces in filenames
 # prevent spaces in filenames. if one exists link the file to a no-space version.
 
@@ -228,6 +228,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             cur_cleanup.append(sam_file)
             bam_file_all = sam_file[:-4] + ".all.bam"
             bam_file_aligned = sam_file[:-4] + ".aligned.bam"
+            bam_file_sort_name = sam_file[:-4] + ".aligned.name.bam"
             fastq_file_aligned = sam_file[:-4] + ".aligned.fq"
             # fastq_file_aligned1 = sam_file[:-4] + ".aligned.1.fq"
             fastq_file_aligned2 = sam_file[:-4] + ".aligned.2.fq"
@@ -244,33 +245,38 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 print(cur_cmd)
                 subprocess.run(cur_cmd, check=True)  # call bowtie2
                 view_threads = parameters.get("samtools_view", {}).get("-p", "1")
+                if not view_threads:
+                    view_threads = SAM_THREADS
                 subprocess.run(
                     "samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(
-                        view_threads, sam_file, bam_file_all
+                        str(view_threads), sam_file, bam_file_all
                     ),
                     shell=True,
                     check=True,
                 )  # convert to bam
                 subprocess.run(
                     "samtools view -@ {} -b -F 4 {} 1> {}".format(
-                        view_threads, bam_file_all, bam_file_aligned
+                        str(view_threads), bam_file_all, bam_file_aligned
                     ),
                     shell=True,
                     check=True,
                 )
-                subprocess.run(
-                    "samtools index -@ {} {}".format(
-                        parameters.get("samtools_index", {}).get("-p", "1"),
-                        bam_file_aligned,
-                    ),
-                    shell=True,
-                    check=True,
-                )
+                sam_sort = parameters.get("samtools_sort", {}).get("-p", "1")
+                if not sam_sort:
+                    sam_sort = SAM_THREADS
+                sort_name_cmd = [
+                    "samtools",
+                    "sort",
+                    "-n",
+                    "-@",
+                    str(sam_sort),
+                    bam_file_aligned,
+                ]
                 bam2fq_cmd = [
                     "bedtools",
                     "bamtofastq",
                     "-i",
-                    bam_file_aligned,
+                    bam_file_sort_name,
                     "-fq",
                     fastq_file_aligned,
                 ]
@@ -279,9 +285,32 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 if read2:  # paired end
                     bam2fq_cmd += ["-fq2", fastq_file_aligned2]
                     bam2fqgz_cmd += [fastq_file_aligned2]
+                print(" ".join(sort_name_cmd))
+                # Need to sort by name to convert to fastq: samtools sort -n myBamFile.bam myBamFile.sortedByName
+                subprocess.run(
+                    sort_name_cmd, check=True, stdout=open(bam_file_sort_name, "w")
+                )
+                cur_cleanup.append(bam_file_sort_name)
                 print((" ".join(bam2fq_cmd)))
-                subprocess.run(bam2fq_cmd, check=True)
+                with open(os.path.join(target_dir, "bedtools.log.txt"), "a") as fd:
+                    print("Redirecting bedtools stderr to a log.", file=sys.stderr)
+                    print(bam_file_sort_name, file=fd)
+                    fd.flush()
+                    subprocess.run(bam2fq_cmd, check=True, stderr=fd)
                 subprocess.run(bam2fqgz_cmd, check=True)
+                samtools_index_threads = parameters.get("samtools_index", {}).get(
+                    "-p", "1"
+                )
+                if not samtools_index_threads:
+                    samtools_index_threads = SAM_THREADS
+                subprocess.run(
+                    "samtools index -@ {} {}".format(
+                        str(samtools_index_threads),
+                        bam_file_aligned,
+                    ),
+                    shell=True,
+                    check=True,
+                )
                 print((" ".join(samstat_cmd)))
                 subprocess.run(samstat_cmd, check=True)
                 cur_cleanup.append(bam_file_all)
@@ -442,6 +471,13 @@ def setup(job_data, output_dir, tool_params):
                         elif f.endswith("fastqc.html"):
                             r["fastqc"].append(os.path.join(target_dir, f))
     recipe = job_data.get("recipe", [])
+    for r in read_list:
+        if "read" in r:
+            r["read"] = moveRead(r["read"])
+        if "read1" in r:
+            r["read1"] = moveRead(r["read1"])
+        if "read2" in r:
+            r["read2"] = moveRead(r["read2"])
     return genome_list, read_list, recipe
 
 
@@ -449,6 +485,17 @@ def gzipMove(source, dest):
     with open(source, "rb") as f_in:
         with gzip.open(dest, "wb") as f_out:
             shutil.copyfileobj(f_in, f_out)
+
+
+def moveRead(filepath):
+    directory, base = os.path.split(filepath)
+    new_base = base.replace(")", "_").replace("(", "_")
+    if new_base != base:
+        newpath = os.path.join(directory, new_base)
+        os.rename(filepath, newpath)
+        return newpath
+    else:
+        return filepath
 
 
 def run_fq_util(job_data, output_dir, tool_params={}):
