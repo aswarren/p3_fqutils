@@ -259,21 +259,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     shell=True,
                     check=True,
                 )
-                subprocess.run(
-                    "samtools index -@ {} {}".format(
-                        parameters.get("samtools_index", {}).get("-p", "1"),
-                        bam_file_aligned,
-                    ),
-                    shell=True,
-                    check=True,
-                )
-                sort_name_cmd = [
-                    "samtools",
-                    "sort",
-                    "-n",
-                    bam_file_aligned,
-                    bam_file_sort_name,
-                ]
+                sort_name_cmd = ["samtools", "sort", "-n", bam_file_aligned]
                 bam2fq_cmd = [
                     "bedtools",
                     "bamtofastq",
@@ -289,9 +275,23 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     bam2fqgz_cmd += [fastq_file_aligned2]
                 print(" ".join(sort_name_cmd))
                 # Need to sort by name to convert to fastq: samtools sort -n myBamFile.bam myBamFile.sortedByName
-                subprocess.run(sort_name_cmd, check=True)
+                subprocess.run(
+                    sort_name_cmd, check=True, stdout=open(bam_file_sort_name, "w")
+                )
+                subprocess.run(
+                    "samtools index -@ {} {}".format(
+                        parameters.get("samtools_index", {}).get("-p", "1"),
+                        bam_file_sort_name,
+                    ),
+                    shell=True,
+                    check=True,
+                )
+                final_cleanup.append(bam_file_aligned)
                 print((" ".join(bam2fq_cmd)))
-                subprocess.run(bam2fq_cmd, check=True)
+                with open(os.path.join(target_dir, "bedtools.log.txt"), "a") as fd:
+                    print("Redirecting bedtools stderr to a log file.", file=sys.stderr)
+                    print(bam_file_sort_name, file=fd)
+                    subprocess.run(bam2fq_cmd, check=True, stderr=fd)
                 subprocess.run(bam2fqgz_cmd, check=True)
                 print((" ".join(samstat_cmd)))
                 subprocess.run(samstat_cmd, check=True)
