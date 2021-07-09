@@ -20,7 +20,7 @@ from fqutil_api import authenticateByEnv, getHostManifest
 
 # Default bowtie2 threads.
 BT2_THREADS = 2
-
+SAM_THREADS = 1
 # hisat2 has problems with spaces in filenames
 # prevent spaces in filenames. if one exists link the file to a no-space version.
 
@@ -245,6 +245,8 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 print(cur_cmd)
                 subprocess.run(cur_cmd, check=True)  # call bowtie2
                 view_threads = parameters.get("samtools_view", {}).get("-p", "1")
+                if not view_threads:
+                    view_threads = SAM_THREADS
                 subprocess.run(
                     "samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(
                         view_threads, sam_file, bam_file_all
@@ -259,7 +261,17 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     shell=True,
                     check=True,
                 )
-                sort_name_cmd = ["samtools", "sort", "-n", bam_file_aligned]
+                sam_sort = parameters.get("samtools_sort", {}).get("-p", "1")
+                if not sam_sort:
+                    sam_sort = SAM_THREADS
+                sort_name_cmd = [
+                    "samtools",
+                    "sort",
+                    "-n",
+                    "-@",
+                    sam_sort,
+                    bam_file_aligned,
+                ]
                 bam2fq_cmd = [
                     "bedtools",
                     "bamtofastq",
@@ -278,9 +290,14 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 subprocess.run(
                     sort_name_cmd, check=True, stdout=open(bam_file_sort_name, "w")
                 )
+                samtools_index_threads = parameters.get("samtools_index", {}).get(
+                    "-p", "1"
+                )
+                if not samtools_index_threads:
+                    samtools_index_threads = SAM_THREADS
                 subprocess.run(
                     "samtools index -@ {} {}".format(
-                        parameters.get("samtools_index", {}).get("-p", "1"),
+                        samtools_index_threads,
                         bam_file_sort_name,
                     ),
                     shell=True,

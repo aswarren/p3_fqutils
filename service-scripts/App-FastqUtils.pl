@@ -163,7 +163,8 @@ sub process_fastq
 	bowtie2 => {-p => $parallel},
 	hisat2 => {-p => $parallel},
 	samtools_view => {-p => $parallel},
-	samtools_index => {-p => $parallel}
+	samtools_index => {-p => $parallel},
+    samtools_sort => {-p => $parallel}
     };
 
     my @cmd = ("p3-fqutils",
