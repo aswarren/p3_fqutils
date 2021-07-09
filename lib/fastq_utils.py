@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import gzip
 import json
 import multiprocessing
 import os
@@ -11,6 +12,7 @@ import sys
 import tarfile
 import urllib.request as request
 from contextlib import closing
+from multiprocessing import Process
 
 import requests
 
@@ -18,7 +20,7 @@ from fqutil_api import authenticateByEnv, getHostManifest
 
 # Default bowtie2 threads.
 BT2_THREADS = 2
-
+SAM_THREADS = 1
 # hisat2 has problems with spaces in filenames
 # prevent spaces in filenames. if one exists link the file to a no-space version.
 
@@ -226,6 +228,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             cur_cleanup.append(sam_file)
             bam_file_all = sam_file[:-4] + ".all.bam"
             bam_file_aligned = sam_file[:-4] + ".aligned.bam"
+            bam_file_sort_name = sam_file[:-4] + ".aligned.name.bam"
             fastq_file_aligned = sam_file[:-4] + ".aligned.fq"
             # fastq_file_aligned1 = sam_file[:-4] + ".aligned.1.fq"
             fastq_file_aligned2 = sam_file[:-4] + ".aligned.2.fq"
@@ -242,33 +245,38 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 print(cur_cmd)
                 subprocess.run(cur_cmd, check=True)  # call bowtie2
                 view_threads = parameters.get("samtools_view", {}).get("-p", "1")
+                if not view_threads:
+                    view_threads = SAM_THREADS
                 subprocess.run(
                     "samtools view -@ {} -Su {}  | samtools sort -o - - > {}".format(
-                        view_threads, sam_file, bam_file_all
+                        str(view_threads), sam_file, bam_file_all
                     ),
                     shell=True,
                     check=True,
                 )  # convert to bam
                 subprocess.run(
                     "samtools view -@ {} -b -F 4 {} 1> {}".format(
-                        view_threads, bam_file_all, bam_file_aligned
+                        str(view_threads), bam_file_all, bam_file_aligned
                     ),
                     shell=True,
                     check=True,
                 )
-                subprocess.run(
-                    "samtools index -@ {} {}".format(
-                        parameters.get("samtools_index", {}).get("-p", "1"),
-                        bam_file_aligned,
-                    ),
-                    shell=True,
-                    check=True,
-                )
+                sam_sort = parameters.get("samtools_sort", {}).get("-p", "1")
+                if not sam_sort:
+                    sam_sort = SAM_THREADS
+                sort_name_cmd = [
+                    "samtools",
+                    "sort",
+                    "-n",
+                    "-@",
+                    str(sam_sort),
+                    bam_file_aligned,
+                ]
                 bam2fq_cmd = [
                     "bedtools",
                     "bamtofastq",
                     "-i",
-                    bam_file_aligned,
+                    bam_file_sort_name,
                     "-fq",
                     fastq_file_aligned,
                 ]
@@ -277,9 +285,32 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 if read2:  # paired end
                     bam2fq_cmd += ["-fq2", fastq_file_aligned2]
                     bam2fqgz_cmd += [fastq_file_aligned2]
+                print(" ".join(sort_name_cmd))
+                # Need to sort by name to convert to fastq: samtools sort -n myBamFile.bam myBamFile.sortedByName
+                subprocess.run(
+                    sort_name_cmd, check=True, stdout=open(bam_file_sort_name, "w")
+                )
+                cur_cleanup.append(bam_file_sort_name)
                 print((" ".join(bam2fq_cmd)))
-                subprocess.run(bam2fq_cmd, check=True)
+                with open(os.path.join(target_dir, "bedtools.log.txt"), "a") as fd:
+                    print("Redirecting bedtools stderr to a log.", file=sys.stderr)
+                    print(bam_file_sort_name, file=fd)
+                    fd.flush()
+                    subprocess.run(bam2fq_cmd, check=True, stderr=fd)
                 subprocess.run(bam2fqgz_cmd, check=True)
+                samtools_index_threads = parameters.get("samtools_index", {}).get(
+                    "-p", "1"
+                )
+                if not samtools_index_threads:
+                    samtools_index_threads = SAM_THREADS
+                subprocess.run(
+                    "samtools index -@ {} {}".format(
+                        str(samtools_index_threads),
+                        bam_file_aligned,
+                    ),
+                    shell=True,
+                    check=True,
+                )
                 print((" ".join(samstat_cmd)))
                 subprocess.run(samstat_cmd, check=True)
                 cur_cleanup.append(bam_file_all)
@@ -315,6 +346,33 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             subprocess.call(["rm", garbage])
 
 
+def unzip(path, value):
+    if path.endswith(".gz"):
+        subprocess.call(["gunzip", path])
+        value.value = 3
+
+
+def paired_filter(read_list, parameters, output_dir, job_data):
+    print("Running paired filter.")
+    for r in read_list:
+        if "read2" in r:
+            value1 = multiprocessing.Value("i", 0, lock=False)
+            value2 = multiprocessing.Value("i", 0, lock=False)
+            p1 = Process(target=unzip, args=(r["read1"], value1))
+            p2 = Process(target=unzip, args=(r["read2"], value2))
+            p1.start()
+            p2.start()
+            p1.join()
+            p2.join()
+            r["read1"] = r["read1"][0 : len(r["read1"]) - value1.value]
+            r["read2"] = r["read2"][0 : len(r["read2"]) - value2.value]
+            pair_cmd = ["fastq_pair", r["read1"], r["read2"]]
+            subprocess.call(pair_cmd)
+            r["read1"] += ".paired.fq"
+            r["read2"] += ".paired.fq"
+    return read_list
+
+
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")
     print("GID: {}".format(parameters["gid"]), file=sys.stderr)
@@ -328,8 +386,10 @@ def get_genome(parameters, host_manifest={}):
                     shutil.copyfileobj(r, f)
         else:
             # parameters["data_api"], parameters["gid"])
-            genome_url = "{data_api}/genome_sequence/?eq(genome_id,{gid})&limit(25000)".format(
-                **parameters
+            genome_url = (
+                "{data_api}/genome_sequence/?eq(genome_id,{gid})&limit(25000)".format(
+                    **parameters
+                )
             )
             headers = {"accept": "application/sralign+dna+fasta"}
             req = requests.Request("GET", genome_url, headers=headers)
@@ -414,6 +474,12 @@ def setup(job_data, output_dir, tool_params):
     return genome_list, read_list, recipe
 
 
+def gzipMove(source, dest):
+    with open(source, "rb") as f_in:
+        with gzip.open(dest, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
+
+
 def run_fq_util(job_data, output_dir, tool_params={}):
     # arguments:
     # list of genomes [{"genome":somefile,"annotation":somefile}]
@@ -430,7 +496,22 @@ def run_fq_util(job_data, output_dir, tool_params={}):
         if step == "TRIM":
             trimmed_reads = run_trim(read_list, output_dir, job_data, tool_params)
             read_list = trimmed_reads
-        if step == "FASTQC":
+        elif step == "PAIRED_FILTER":
+            read_list = paired_filter(read_list, tool_params, output_dir, job_data)
+        elif step == "FASTQC":
             run_fastqc(read_list, output_dir, job_data, tool_params)
-        if step == "ALIGN":
+        elif step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
+        else:
+            print("Skipping step. Not found: {}".format(step), file=sys.stderr)
+    if len(recipe) == 1 and recipe[0].upper() == "PAIRED_FILTER":
+        for r in read_list:
+            if "read2" in r:
+                dest1 = os.path.join(output_dir, os.path.basename(r["read1"]) + ".gz")
+                dest2 = os.path.join(output_dir, os.path.basename(r["read2"]) + ".gz")
+                p1 = Process(target=gzipMove, args=(r["read1"], dest1))
+                p2 = Process(target=gzipMove, args=(r["read2"], dest2))
+                p1.start()
+                p2.start()
+                p1.join()
+                p2.join()

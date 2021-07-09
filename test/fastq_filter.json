@@ -1,0 +1,13 @@
+{
+    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_file": "fqutils_filter",
+    "paired_end_libs": [
+        {
+	            "read1": "/jsporter@patricbrc.org/home/Test_Files/SRR10961160_1.fastq",
+	            "read2": "/jsporter@patricbrc.org/home/Test_Files/SRR10961160_2.fastq"
+	        }
+    ],
+    "recipe": [
+        "Paired_Filter"
+    ]
+}

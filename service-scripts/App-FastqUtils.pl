@@ -4,6 +4,7 @@
 
 use Bio::KBase::AppService::AppScript;
 use Bio::KBase::AppService::AppConfig;
+use Bio::KBase::AppService::ReadSet;
 
 use strict;
 use Data::Dumper;
@@ -15,11 +16,61 @@ use IPC::Run qw(run);
 use Cwd;
 use Clone;
 
-my $script = Bio::KBase::AppService::AppScript->new(\&process_fastq);
+my $script = Bio::KBase::AppService::AppScript->new(\&process_fastq, \&preflight);
 
 my $rc = $script->run(\@ARGV);
 
 exit $rc;
+
+sub preflight
+{
+    my($app, $app_def, $raw_params, $params) = @_;
+
+    print STDERR "preflight fastqc ", Dumper($params, $app);
+
+    my $token = $app->token();
+    my $ws = $app->workspace();
+
+    my $readset;
+    eval {
+	$readset = Bio::KBase::AppService::ReadSet->create_from_asssembly_params($params);
+    };
+    if ($@)
+    {
+	die "Error parsing assembly parameters: $@";
+    }
+
+    my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($ws);
+
+    if (!$ok)
+    {
+	die "Reads as defined in parameters failed to validate. Errors:\n\t" . join("\n\t", @$errs);
+    }
+    print STDERR "comp=$comp_size uncomp=$uncomp_size\n";
+
+    my $est_uncomp = $comp_size / 0.75 + $uncomp_size;
+
+    my $est_time = int($est_uncomp * 1e-6 * 3.0);
+
+    my $est_cpu = 8;
+    my $est_ram = '32G';
+
+    if ($est_time < 3600)
+    {
+	$est_time = 3600;
+    }
+    elsif ($est_time > 3600 * 2)
+    {
+	$est_ram = '128G';
+    }
+
+    return {
+	cpu => $est_cpu,
+	memory => $est_ram,
+	runtime => $est_time,
+    };
+}
+
 
 sub process_fastq
 {
@@ -84,7 +135,7 @@ sub process_fastq
            }
         }
     }
-              
+
     my $staged = {};
     if (@to_stage)
     {
@@ -96,7 +147,7 @@ sub process_fastq
 	    $$path_ref = $staged_file;
 	}
     }
-    
+
     #
     # Write job description.
     #
@@ -104,7 +155,7 @@ sub process_fastq
     open(JDESC, ">", $jdesc) or die "Cannot write $jdesc: $!";
     print JDESC JSON::XS->new->pretty(1)->encode($params_to_app);
     close(JDESC);
-    
+
     my $parallel = $ENV{P3_ALLOCATED_CPU};
     my $override = {
 	fastqc => { -p => $parallel},
@@ -112,19 +163,33 @@ sub process_fastq
 	bowtie2 => {-p => $parallel},
 	hisat2 => {-p => $parallel},
 	samtools_view => {-p => $parallel},
-	samtools_index => {-p => $parallel}
+	samtools_index => {-p => $parallel},
+    samtools_sort => {-p => $parallel}
     };
 
-    my @cmd = ("p3-fqutils", "--jfile", $jdesc, "--sstring", $sstring, "-p", encode_json($override), "-o", $work_dir);
+    my @cmd = ("p3-fqutils",
+	       "--jfile", $jdesc,
+	       "--sstring", $sstring,
+	       "-p", encode_json($override),
+	       "-o", $work_dir);
 
     warn Dumper(\@cmd, $params_to_app);
-    
+
     my $ok = run(\@cmd);
+    # my $ok = run(\@cmd,
+	# 	 ">", "$work_dir/fqutils.out.txt",
+	# 	 "2>", "$work_dir/fqutils.err.txt");
     if (!$ok)
     {
-	die "Command failed: @cmd\n";
+        # opendir(D, $work_dir) or die "Cannot opendir $work_dir: $!";
+        # $app->workspace->save_file_to_file("$work_dir/fqutils.out.txt", {}, "$output_folder/fqutils.out.txt", "txt", 1,
+        #                     (-s "$work_dir/fqutils.out.txt" > 10_000 ? 1 : 0), # use shock for larger files
+        #                     $token);
+        # $app->workspace->save_file_to_file("$work_dir/fqutils.err.txt", {}, "$output_folder/fqutils.err.txt", "txt", 1,
+        # (-s "$work_dir/fqutils.err.txt" > 10_000 ? 1 : 0), # use shock for larger files
+        # $token);
+	    die "Command failed: @cmd\n";
     }
-
 
     my @output_suffixes = ([qr/\.bam$/, "bam"],
 			   [qr/\.fq\.gz$/, "reads"],
@@ -149,7 +214,7 @@ sub process_fastq
  	    	$output=0;
 		my $path = "$output_folder/$file";
 		my $type = $suf->[1];
-		
+
 		$app->workspace->save_file_to_file("$work_dir/$file", {}, "$output_folder/$file", $type, 1,
 					       (-s "$work_dir/$file" > 10_000 ? 1 : 0), # use shock for larger files
 					       $token);
