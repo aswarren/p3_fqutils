@@ -1,0 +1,12 @@
+{
+    "recipe": [
+        "Trim"
+    ],
+    "output_path": "/jsporter@patricbrc.org/home/Fastq-Utils",
+    "output_file": "special_chars",
+    "single_end_libs": [
+        {
+            "read": "/jsporter@patricbrc.org/home/Test_Files/ERR3457743.1k.&()%$#@!<>|{}[].fastq"
+        }
+    ]
+}
