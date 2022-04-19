@@ -526,7 +526,7 @@ def run_fq_util(job_data, output_dir, tool_params={}):
     # parametrs_file is a json keyed parameters list.
     # Example tool_params: '{"fastqc":{"-p":"2"},"trim_galore":{"-p":"2"},"bowtie2":{"-p":"2"},"hisat2":{"-p":"2"},"samtools_view":{"-p":"2"},"samtools_index":{"-p":"2"}}'
     output_dir = os.path.abspath(output_dir)
-    if os.path.isdir(output_dir) and not os.path.exists(output_dir):
+    if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     genome_list, read_list, recipe = setup(job_data, output_dir, tool_params)
     # print("genome_list: {}\nread_list: {}\nrecipe: {}".format(genome_list, read_list, recipe), file=sys.stdout)
