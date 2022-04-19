@@ -33,7 +33,8 @@ def link_space(file_path):
         clean_name = name.replace(" ", "")
         result = file_path.replace(name, clean_name)
         if not os.path.exists(result):
-            subprocess.run(["ln", "-s", file_path, result], check=True)
+            os.symlink(file_path, result)
+            # subprocess.run(["ln", "-s", file_path, result], check=True)
     return result
 
 
@@ -175,10 +176,11 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 for x in archive.getnames()
             ]
             final_cleanup += indices
+            archive.extractall(path=output_dir)
+            # subprocess.run(
+            #     ["tar", "-xvf", genome["hisat_index"], "-C", output_dir], check=True
+            # )
             archive.close()
-            subprocess.run(
-                ["tar", "-xvf", genome["hisat_index"], "-C", output_dir], check=True
-            )
             index_prefix = os.path.join(
                 output_dir,
                 os.path.basename(genome["hisat_index"]).replace(".ht2.tar", ""),
@@ -327,7 +329,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                 subprocess.run(samstat_cmd, check=True)
                 cur_cleanup.append(bam_file_all)
             for garbage in cur_cleanup:
-                subprocess.run(["rm", garbage])
+                os.remove(garbage)
         files = [
             f
             for f in os.listdir(target_dir)
@@ -355,12 +357,15 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     os.path.join(target_dir, f[:-5] + ".2.fq"),
                 )
         for garbage in final_cleanup:
-            subprocess.run(["rm", garbage])
+            os.remove(garbage)
 
 
 def unzip(path, value):
     if path.endswith(".gz"):
-        subprocess.run(["gunzip", path])
+        with gzip.open(path, "rb") as f_in:
+            with open(path[0 : len(path) - 3], "wb") as f_out:
+                shutil.copyfileobj(f_in, f_out)
+        # subprocess.run(["gunzip", path])
         value.value = 3
 
 
@@ -501,7 +506,8 @@ def gzipMove(source, dest):
 def moveRead(filepath):
     directory, base = os.path.split(filepath)
     # Don't try to escape to prevent escape shenanigans.
-    new_base = re.sub(r"[\`~\"'!@#$%^&*(){}\[\]|<>]", "_", base)
+    new_base = re.sub(r"[^a-zA-Z0-9_\-\.]", "_", base)
+    # new_base = re.sub(r"[\`~\"'!@#$%^&*(){}\[\]|<>]", "_", base)
     # new_base = base
     # for spec_char, repl in SPECIAL_CHARS:
     #     new_base = new_base.replace(spec_char, repl)
@@ -520,7 +526,8 @@ def run_fq_util(job_data, output_dir, tool_params={}):
     # parametrs_file is a json keyed parameters list.
     # Example tool_params: '{"fastqc":{"-p":"2"},"trim_galore":{"-p":"2"},"bowtie2":{"-p":"2"},"hisat2":{"-p":"2"},"samtools_view":{"-p":"2"},"samtools_index":{"-p":"2"}}'
     output_dir = os.path.abspath(output_dir)
-    subprocess.run(["mkdir", "-p", output_dir])
+    if os.path.isdir(output_dir) and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     genome_list, read_list, recipe = setup(job_data, output_dir, tool_params)
     # print("genome_list: {}\nread_list: {}\nrecipe: {}".format(genome_list, read_list, recipe), file=sys.stdout)
     # sys.stdout.flush()
