@@ -487,14 +487,21 @@ def setup(job_data, output_dir, tool_params):
                         elif f.endswith("fastqc.html"):
                             r["fastqc"].append(os.path.join(target_dir, f))
     recipe = job_data.get("recipe", [])
+    new_read_list = []
     for r in read_list:
-        if "read" in r:
-            r["read"] = moveRead(r["read"])
-        if "read1" in r:
+        if "read1" in r and "read2" not in r and os.path.exists(r["read1"]):
             r["read1"] = moveRead(r["read1"])
-        if "read2" in r:
+            new_read_list.append(r)
+        if (
+            "read1" in r
+            and "read2" in r
+            and os.path.exists(r["read1"])
+            and os.path.exists(r["read2"])
+        ):
+            r["read1"] = moveRead(r["read1"])
             r["read2"] = moveRead(r["read2"])
-    return genome_list, read_list, recipe
+            new_read_list.append(r)
+    return genome_list, new_read_list, recipe
 
 
 def gzipMove(source, dest):
