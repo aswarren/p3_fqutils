@@ -1,0 +1,14 @@
+{
+  "output_file": "samstat_segfault_SRR528324-StMarie-trim map to StMarie",
+  "srr_libs": [
+    {
+      "srr_accession": "SRR528324"
+    }
+  ],
+  "output_path": "/jsporter@patricbrc.org/home/Fastq-Utils",
+  "reference_genome_id": "234826.6",
+  "recipe": [
+    "Trim",
+    "Align"
+  ]
+}

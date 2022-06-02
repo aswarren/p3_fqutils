@@ -326,7 +326,24 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                     check=True,
                 )
                 print((" ".join(samstat_cmd)))
-                subprocess.run(samstat_cmd, check=True)
+                try:
+                    subprocess.run(samstat_cmd, check=True)
+                except subprocess.CalledProcessError as cpe:
+                    with open(bam_file_all + ".samstat.html", "w") as samstat_html:
+                        samstat_html.write("<!DOCTYPE html>\n<html>\n<body>\n")
+                        samstat_html.write(
+                            "<h2>Your samstat job had a segfault error. The results could not be displayed.</h2>\n"
+                        )
+                        samstat_html.write(
+                            "<p><b>return code:</b> {}</p>\n<p><b>command:</b> {}</p>\n<p><b>output:</b> {}</p>\n<p><b>stdout:</b> {}</p>\n<p><b>stderr:</b> {}</p>\n".format(
+                                cpe.returncode,
+                                cpe.cmd,
+                                cpe.output,
+                                cpe.stdout,
+                                cpe.stderr,
+                            ),
+                        )
+                        samstat_html.write("</html>\n</body>\n")
                 cur_cleanup.append(bam_file_all)
             for garbage in cur_cleanup:
                 os.remove(garbage)
