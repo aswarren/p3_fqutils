@@ -1,0 +1,364 @@
+srun: job 16097543 queued and waiting for resources
+srun: job 16097543 has been allocated resources
+Namespace(estimator='RandomForestClassifier', feature_path='/scratch/jsp4cu/platform_prediction/data/train/train.shuf.features.reduced.txt', folds=4, iterations=25, mode='train', model_path='/scratch/jsp4cu/platform_prediction/models/reduced/RandomForestClassifier/', processes=4, response_path='/scratch/jsp4cu/platform_prediction/data/train/train.shuf.labels.reduced.txt', verbose=10)
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Namespace(estimator='RandomForestClassifier', feature_path='/scratch/jsp4cu/platform_prediction/data/train/train.shuf.features.reduced.txt', folds=4, iterations=25, mode='train', model_path='/scratch/jsp4cu/platform_prediction/models/reduced/RandomForestClassifier/', processes=4, response_path='/scratch/jsp4cu/platform_prediction/data/train/train.shuf.labels.reduced.txt', verbose=10)
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15, score=0.999, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13, score=0.999, total=   1.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12, score=0.998, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9, score=0.999, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8, score=0.600, total=   0.4s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13, score=0.998, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13, score=0.999, total=   0.6s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14, score=0.999, total=   2.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13, score=0.399, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11, score=0.999, total=   0.7s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11, score=0.998, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10, score=0.999, total=   1.0s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15, score=0.202, total=   0.1s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10, score=0.997, total=   1.7s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14 [CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15, score=0.998, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13, score=0.998, total=   1.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12, score=0.999, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9, score=0.997, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8, score=0.600, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13, score=0.998, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13, score=0.999, total=   0.6s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14, score=0.998, total=   2.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13, score=0.399, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11, score=0.999, total=   0.8s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11, score=0.997, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10, score=0.998, total=   1.0s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15, score=0.201, total=   0.1s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10, score=0.997, total=   1.7s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14 [CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15, score=0.999, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13, score=0.998, total=   1.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12, score=0.999, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9, score=0.999, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8, score=0.599, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13, score=0.996, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13, score=0.998, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14, score=0.997, total=   2.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13, score=0.401, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11, score=0.999, total=   0.8s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11, score=0.998, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10, score=0.999, total=   1.0s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15, score=0.202, total=   0.1s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10, score=0.999, total=   1.8s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14 [CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.3038539421734932, randomforestclassifier__min_samples_leaf=0.00012000257008120785, randomforestclassifier__min_samples_split=1.0010313211249946e-05, randomforestclassifier__n_estimators=15, score=0.999, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5267676945755696, randomforestclassifier__min_samples_leaf=1.142927407090478e-10, randomforestclassifier__min_samples_split=2.9731542371106944e-10, randomforestclassifier__n_estimators=13, score=0.999, total=   1.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6649819099031609, randomforestclassifier__min_samples_leaf=2.2769813542906632e-08, randomforestclassifier__min_samples_split=2.7628099792042066e-08, randomforestclassifier__n_estimators=12, score=0.999, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.26195895020451854, randomforestclassifier__min_samples_leaf=0.00014167962370637477, randomforestclassifier__min_samples_split=1.0456621823662456e-06, randomforestclassifier__n_estimators=9, score=0.999, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5831031522361697, randomforestclassifier__min_samples_leaf=2.057855138322008e-11, randomforestclassifier__min_samples_split=0.2672771568927532, randomforestclassifier__n_estimators=8, score=0.599, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.6082936943832916, randomforestclassifier__min_samples_leaf=7.925209715120999e-10, randomforestclassifier__min_samples_split=0.005013808706992556, randomforestclassifier__n_estimators=13, score=0.998, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.4378161666984202, randomforestclassifier__min_samples_leaf=5.093094148862916e-12, randomforestclassifier__min_samples_split=0.0014978513028587107, randomforestclassifier__n_estimators=13, score=0.999, total=   0.5s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.9632937570315192, randomforestclassifier__min_samples_leaf=2.4383205382020194e-10, randomforestclassifier__min_samples_split=9.705485420324948e-11, randomforestclassifier__n_estimators=14, score=0.999, total=   2.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.341542481838273, randomforestclassifier__min_samples_leaf=0.197361115196613, randomforestclassifier__min_samples_split=4.840521286480189e-05, randomforestclassifier__n_estimators=13, score=0.404, total=   0.2s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.3534445023095608, randomforestclassifier__min_samples_leaf=4.721959821657944e-10, randomforestclassifier__min_samples_split=1.3837635494106047e-07, randomforestclassifier__n_estimators=11, score=0.998, total=   0.8s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.1432482780939943, randomforestclassifier__min_samples_leaf=1.050918563254241e-10, randomforestclassifier__min_samples_split=0.0040357825141015494, randomforestclassifier__n_estimators=11, score=0.997, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.5053463691207285, randomforestclassifier__min_samples_leaf=5.487313362817169e-07, randomforestclassifier__min_samples_split=8.306006785524895e-06, randomforestclassifier__n_estimators=10, score=0.998, total=   1.0s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=2.5309372327278848e-08, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=15, score=0.202, total=   0.1s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=5.935963077578392e-12, randomforestclassifier__min_samples_split=0.00018618338740296553, randomforestclassifier__n_estimators=10, score=0.998, total=   1.8s
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.8s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.8s remaining:    1.8s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.9s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.9s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.2s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.2s remaining:    1.2s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.2s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.2s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.3s remaining:    1.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.3s remaining:    0.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.3s remaining:    0.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.4s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.4s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.4s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.4s remaining:    1.4s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.6s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.6s remaining:    0.6s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.6s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.6s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    2.2s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    2.3s remaining:    2.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    2.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    2.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.2s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1732s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.2s remaining:    0.2s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.7s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.8s remaining:    0.8s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.8s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.8s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.2s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.3s remaining:    0.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.0s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.0s remaining:    1.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.1s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.1s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.1s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1367s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.1s remaining:    0.1s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.7s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.8s remaining:    1.8s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.8s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.8s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.6s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.7s remaining:    1.7s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.7s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.7s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.3s remaining:    0.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.5s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.5s remaining:    1.5s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.6s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.6s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.4s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.4s remaining:    1.4s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.4s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.1s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.0568s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.1s remaining:    0.1s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.1s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1245s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.1s remaining:    0.1s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.1s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1348s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.1s remaining:    0.1s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.1s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    1.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    1.3s remaining:    1.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    1.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.1s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1394s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.1s remaining:    0.1s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.3s
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.3s remaining:    0.3s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.3s finished
+[Parallel(n_jobs=4)]: Using backend LokyBackend with 4 concurrent workers.
+[Parallel(n_jobs=4)]: Done   1 tasks      | elapsed:    0.2s
+[Parallel(n_jobs=4)]: Batch computation too fast (0.1935s.) Setting batch_size=2.
+[Parallel(n_jobs=4)]: Done   2 out of   4 | elapsed:    0.2s remaining:    0.2s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s remaining:    0.0s
+[Parallel(n_jobs=4)]: Done   4 out of   4 | elapsed:    0.2s finished
+The best score: 0.9987727272727273
+The best parameters: OrderedDict([('randomforestclassifier__criterion', 'entropy'), ('randomforestclassifier__max_features', 0.66546104485897), ('randomforestclassifier__min_samples_leaf', 2.3308370651323293e-09), ('randomforestclassifier__min_samples_split', 0.00020586195073887277), ('randomforestclassifier__n_estimators', 14)])
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14 Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+Fitting 4 folds for each of 1 candidates, totalling 4 fits
+The process took time: 0:00:34.213592
+
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14, score=0.999, total=   1.6s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13, score=0.998, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12, score=0.998, total=   1.5s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.999, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11, score=0.202, total=   0.0s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.202, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8, score=0.995, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15, score=0.999, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8, score=0.997, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11, score=0.998, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8, score=0.997, total=   0.2s
+
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14, score=0.999, total=   1.7s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13, score=0.998, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12, score=0.999, total=   1.5s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.999, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11, score=0.201, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.202, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8, score=0.997, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15, score=0.998, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8, score=0.998, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11, score=0.998, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8, score=0.997, total=   0.2s
+
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14, score=0.999, total=   1.6s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13, score=0.999, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12, score=0.998, total=   1.5s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.997, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11, score=0.200, total=   0.0s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.200, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8, score=0.997, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15, score=0.999, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8, score=0.996, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11, score=0.999, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8, score=0.997, total=   0.2s
+
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.66546104485897, randomforestclassifier__min_samples_leaf=2.3308370651323293e-09, randomforestclassifier__min_samples_split=0.00020586195073887277, randomforestclassifier__n_estimators=14, score=0.998, total=   1.7s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.17101215611742862, randomforestclassifier__min_samples_leaf=3.518021206282407e-12, randomforestclassifier__min_samples_split=2.408770726464155e-07, randomforestclassifier__n_estimators=13, score=0.999, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=0.671857552087631, randomforestclassifier__min_samples_leaf=2.0000000000000004e-12, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=12, score=0.999, total=   1.5s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=8.591482035358195e-08, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.997, total=   1.4s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=1.0, randomforestclassifier__n_estimators=11, score=0.200, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=0.49999999999999994, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=15, score=0.201, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=7.935821378462879e-10, randomforestclassifier__min_samples_split=2.0000000000000004e-12, randomforestclassifier__n_estimators=8, score=0.997, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=1.0, randomforestclassifier__min_samples_leaf=1.3565324717606328e-05, randomforestclassifier__min_samples_split=2.9740904551287133e-06, randomforestclassifier__n_estimators=15, score=0.998, total=   1.3s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.1604644796461662e-07, randomforestclassifier__min_samples_split=2.3390637605662516e-10, randomforestclassifier__n_estimators=8, score=0.996, total=   0.1s
+[CV] randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11 
+[CV]  randomforestclassifier__criterion=gini, randomforestclassifier__max_features=0.24902378916347212, randomforestclassifier__min_samples_leaf=2.8221624813000813e-08, randomforestclassifier__min_samples_split=7.474617333717246e-09, randomforestclassifier__n_estimators=11, score=0.999, total=   0.3s
+[CV] randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8 
+[CV]  randomforestclassifier__criterion=entropy, randomforestclassifier__max_features=2e-12, randomforestclassifier__min_samples_leaf=1.0935186697236804e-06, randomforestclassifier__min_samples_split=0.00016114438960345, randomforestclassifier__n_estimators=8, score=0.998, total=   0.2s
