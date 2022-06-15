@@ -42,6 +42,8 @@ sub preflight
 
     my($ok, $errs, $comp_size, $uncomp_size) = $readset->validate($ws);
 
+    my $have_align = scalar grep { $_ eq 'Align' } @{$params->{recipe}};
+
     if (!$ok)
     {
 	die "Reads as defined in parameters failed to validate. Errors:\n\t" . join("\n\t", @$errs);
@@ -51,6 +53,11 @@ sub preflight
     my $est_uncomp = $comp_size / 0.75 + $uncomp_size;
 
     my $est_time = int($est_uncomp * 1e-6 * 3.0);
+
+    if ($have_align)
+    {
+	$est_time *= 10 * $have_align;
+    }
 
     my $est_cpu = 8;
     my $est_ram = '32G';
