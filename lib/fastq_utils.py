@@ -177,14 +177,14 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             ]
             final_cleanup += indices
             archive.extractall(path=output_dir)
-            # subprocess.run(
-            #     ["tar", "-xvf", genome["hisat_index"], "-C", output_dir], check=True
-            # )
             archive.close()
             index_prefix = os.path.join(
-                output_dir,
-                os.path.basename(genome["hisat_index"]).replace(".ht2.tar", ""),
-            )  # somewhat fragile convention. tar prefix is underlying index prefix
+                output_dir, re.sub(r"\.?[0-9]*\.ht2$", "", os.path.basename(indices[0]))
+            )
+            # index_prefix = os.path.join(
+            #     output_dir,
+            #     os.path.basename(genome["hisat_index"]).replace(".ht2.tar", ""),
+            # )  # somewhat fragile convention. tar prefix is underlying index prefix
             cmd = ["hisat2", "--dta-cufflinks", "-x", index_prefix]
             thread_count = parameters.get("hisat2", {}).get("-p", 0)
         else:
@@ -409,15 +409,26 @@ def paired_filter(read_list, parameters, output_dir, job_data):
 
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")
+    genome = {"genome_link": target_file}
     print("GID: {}".format(parameters["gid"]), file=sys.stderr)
     if not os.path.exists(target_file):
         taxid = str(parameters["gid"]).split(".")[0]
         if taxid in host_manifest:
-            genome_url = host_manifest[taxid]["patric_ftp"] + "_genomic.fna"
-            print(genome_url)
-            with closing(request.urlopen(genome_url)) as r:
-                with open(target_file, "wb") as f:
+            # Only the index is needed.
+            # genome_url = host_manifest[taxid]["patric_ftp"] + "_genomic.fna"
+            # print(genome_url)
+            # with closing(request.urlopen(genome_url)) as r:
+            #     with open(target_file, "wb") as f:
+            #         shutil.copyfileobj(r, f)
+            index_url = host_manifest[taxid]["patric_ftp"] + "_genomic.ht2.tar"
+            index_file = os.path.join(
+                parameters["output_path"], parameters["gid"] + ".ht2.tar"
+            )
+            print(index_url)
+            with closing(request.urlopen(index_url)) as r:
+                with open(index_file, "wb") as f:
                     shutil.copyfileobj(r, f)
+            genome["hisat_index"] = index_file
         else:
             # parameters["data_api"], parameters["gid"])
             genome_url = (
@@ -443,7 +454,7 @@ def get_genome(parameters, host_manifest={}):
                 for block in response.iter_content(1024):
                     handle.write(block)
     sys.stdout.flush()
-    return target_file
+    return genome
 
 
 def setup(job_data, output_dir, tool_params):
@@ -458,7 +469,7 @@ def setup(job_data, output_dir, tool_params):
         genome = {}
         # cheat. this will need expansion if you want to support multiple genomes
         job_data["gid"] = gid
-        genome["genome_link"] = get_genome(job_data, manifest)
+        genome.update(get_genome(job_data, manifest))
         genome["gid"] = gid
         genome["genome"] = gid
         genome["output"] = output_dir
