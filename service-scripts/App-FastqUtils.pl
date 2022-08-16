@@ -75,6 +75,7 @@ sub preflight
 	cpu => $est_cpu,
 	memory => $est_ram,
 	runtime => $est_time,
+	storage => $est_uncomp,
     };
 }
 
