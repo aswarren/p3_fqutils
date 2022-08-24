@@ -171,16 +171,18 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
         final_cleanup = []
         if "hisat_index" in genome and genome["hisat_index"]:
             archive = tarfile.open(genome["hisat_index"])
-            indices = [
-                os.path.join(output_dir, os.path.basename(x))
-                for x in archive.getnames()
-            ]
-            final_cleanup += indices
             archive.extractall(path=output_dir)
-            archive.close()
+            indices = []
+            for ht2_filename in archive.getnames():
+                home_name = os.path.join(output_dir, os.path.basename(ht2_filename))
+                if not os.path.exists(home_name):
+                    shutil.move(os.path.join(output_dir, ht2_filename), home_name)
+                indices.append(home_name)
+            final_cleanup += indices
             index_prefix = os.path.join(
                 output_dir, re.sub(r"\.?[0-9]*\.ht2$", "", os.path.basename(indices[0]))
             )
+            archive.close()
             # index_prefix = os.path.join(
             #     output_dir,
             #     os.path.basename(genome["hisat_index"]).replace(".ht2.tar", ""),
