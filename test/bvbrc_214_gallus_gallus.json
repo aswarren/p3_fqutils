@@ -1,0 +1,14 @@
+{
+    "recipe": [
+        "Align"
+    ],
+    "output_path": "/jsporter@patricbrc.org/home/Fastq-Utils",
+    "output_file": "gallus_gallus_bvbrc_214",
+    "reference_genome_id": "9031.4",
+    "paired_end_libs": [
+        {
+            "read1": "/jsporter@patricbrc.org/JSP_debug/kelsey.briggs/CAT-P1_S8_L001_R1_001.fastq.gz",
+            "read2": "/jsporter@patricbrc.org/JSP_debug/kelsey.briggs/CAT-P1_S8_L001_R2_001.fastq.gz"
+        }
+    ]
+}
