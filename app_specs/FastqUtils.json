@@ -37,8 +37,7 @@
           "desc": "FASTQ file of reads",
           "wstype": "ReadFile",
           "type": "wstype"
-        }
-      ],
+        },
         {
           "default": "infer",
           "desc": "Sequencing platform used to generate the read library",
@@ -54,6 +53,7 @@
           "required": 0,
           "type": "enum"
         }
+      ]
     },
     {
       "id": "single_end_libs",
@@ -69,8 +69,7 @@
           "desc": "FASTQ file of reads",
           "wstype": "ReadFile",
           "type": "wstype"
-        }
-      ],
+        },
         {
           "default": "infer",
           "desc": "Sequencing platform used to generate the read library",
@@ -86,6 +85,7 @@
           "required": 0,
           "type": "enum"
         }
+      ]
     },
     {
 	"id": "srr_libs",
