@@ -37,6 +37,21 @@
           "desc": "FASTQ file of reads",
           "wstype": "ReadFile",
           "type": "wstype"
+        },
+        {
+          "default": "infer",
+          "desc": "Sequencing platform used to generate the read library",
+          "enum": [
+            "infer",
+            "illumina",
+            "pacbio",
+            "pacbio_hifi",
+            "nanopore"
+          ],
+          "id": "platform",
+          "label": "Sequencing Platform",
+          "required": 0,
+          "type": "enum"
         }
       ]
     },
@@ -54,6 +69,21 @@
           "desc": "FASTQ file of reads",
           "wstype": "ReadFile",
           "type": "wstype"
+        },
+        {
+          "default": "infer",
+          "desc": "Sequencing platform used to generate the read library",
+          "enum": [
+            "infer",
+            "illumina",
+            "pacbio",
+            "pacbio_hifi",
+            "nanopore"
+          ],
+          "id": "platform",
+          "label": "Sequencing Platform",
+          "required": 0,
+          "type": "enum"
         }
       ]
     },
