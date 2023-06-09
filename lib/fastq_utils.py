@@ -234,12 +234,13 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
             # generate output file name, based on input read file(s) name(s).
             out_name = "_".join([Path(i[1]).stem.replace(" ", "") for i in r.items() if "read" in i[0]])
             sam_path = Path(target_dir) / f"{out_name}.sam"
+            unmapped_fq_gz_path = Path(target_dir) / f"{out_name}.unmapped.fq.gz"
             if "read2" in r:
                 if use_bowtie2:
                     cur_cmd += [
                         "-1", link_space(r["read1"]), "-2", link_space(r["read2"]),
                         "-S", str(sam_path),
-                        "--un-conc-gz", str(Path(target_dir) / f"{out_name}.unmapped.fq.gz"),
+                        "--un-conc-gz", str(unmapped_fq_gz_path),
                         ]
                 else: # minimap2
                     cur_cmd += [
@@ -254,7 +255,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                     cur_cmd += [
                         "-U", link_space(r["read1"]),
                         "-S", str(sam_path),
-                        "--un-gz", str(Path(target_dir) / f"{out_name}.unmapped.fq.gz"),
+                        "--un-gz", str(unmapped_fq_gz_path),
                     ]
                 else: # minimap2
                     cur_cmd += [
@@ -293,6 +294,21 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                         stdout=outstream,
                     )
                     samtools_sort.communicate()
+
+                # minimap2 can't write the unmapped reads like bowtie2
+                if not use_bowtie2: # minimap2
+                    with unmapped_fq_gz_path.open('w') as un_fq_gz_hdl:
+                        subprocess.run(
+                            [
+                                "samtools", "fastq",
+                                "--threads", str(view_threads),
+                                "-n", "-f", "4",
+                                bam_file_all
+                            ],
+                            check=True,
+                            stdout=un_fq_gz_hdl,
+                        )
+
                 with open(bam_file_aligned, "w") as outstream:
                     subprocess.run(
                         [
