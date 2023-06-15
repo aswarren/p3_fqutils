@@ -13,7 +13,7 @@ import tarfile
 import urllib.request as request
 from contextlib import closing
 from multiprocessing import Process
-
+from pathlib import Path
 import requests
 
 from fqutil_api import authenticateByEnv, getHostManifest
@@ -163,9 +163,27 @@ def run_trim(read_list, output_dir, job_data, tool_params):
             sys.exit()
     return trimmed_reads
 
+def get_minimap_preset(platform=None):
+    """
+    Try to determine the preset string, based on the
+    jobspec reads platform, if present.
+    default: []
+    """
+    lookup_dict = {
+        "pacbio":            "map-pb",    # PacBio CLR genomic reads
+        "nanopore":          "map-ont",   # Oxford Nanopore genomic reads
+        "pacbio_hifi":       "map-hifi",  # PacBio HiFi/CCS genomic reads (v2.19 or later)
+        "packbio_hifi_2_18": "asm20",     # PacBio HiFi/CCS genomic reads (v2.18 or earlier)
+        "illumina":          "sr",        # short genomic (possibly paired-end) reads
+    }
+    if platform in lookup_dict:
+        return ["-x", lookup_dict[platform]]
+    else:
+        return []
 
-def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
+def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_bowtie2=False):
     # modifies condition_dict sub replicates to include 'bowtie' dict recording output files
+
     for genome in genome_list:
         genome_link = genome["genome_link"]
         final_cleanup = []
@@ -188,15 +206,23 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             #     os.path.basename(genome["hisat_index"]).replace(".ht2.tar", ""),
             # )  # somewhat fragile convention. tar prefix is underlying index prefix
             cmd = ["hisat2", "--dta-cufflinks", "-x", index_prefix]
-            thread_count = parameters.get("hisat2", {}).get("-p", 0)
-        else:
+            hisat2_params = parameters.get("hisat2", {})
+            # thread count
+            if "-p" in hisat2_params:
+                cmd += ["-p", str(hisat2_params["-p"])]
+        elif use_bowtie2:
             subprocess.run(["bowtie2-build", genome_link, genome_link], check=True)
-            # cmd=["hisat2","--dta-cufflinks", "-x", genome_link, "--no-spliced-alignment"]
-            cmd = ["bowtie2", "-x", genome_link]
-            thread_count = parameters.get("bowtie2", {}).get("-p", 0)
-        if not thread_count:
-            thread_count = BT2_THREADS
-        cmd += ["-p", str(thread_count)]
+            bt2_threads = parameters.get("bowtie2", {}).get("-p", BT2_THREADS)
+            cmd = ["bowtie2", "-p", str(bt2_threads), "-x", genome_link]
+        else: 
+            cmd = ["minimap2", "-a"] # . . . '-a' is to output in SAM format
+            mm2_params = parameters.get("minimap2", {})
+            # thread count (tool default is 3)
+            if "-t" in mm2_params:
+                cmd += ["-t", str(mm2_params["-t"])]
+
+        print(f"{cmd=}")
+
         target_dir = genome["output"]
         for r in read_list:
             rcount = 0
@@ -205,54 +231,61 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
             samstat_cmd = ["samstat"]
             cur_cmd = list(cmd)
             read2 = False
+            # generate output file name, based on input read file(s) name(s).
+            out_name = "_".join([Path(i[1]).stem.replace(" ", "") for i in r.items() if "read" in i[0]])
+            sam_path = Path(target_dir) / f"{out_name}.sam"
+            unmapped_fq_gz_path = Path(target_dir) / f"{out_name}.unmapped.fq.gz"
             if "read2" in r:
-                cur_cmd += ["-1", link_space(r["read1"]), "-2", link_space(r["read2"])]
-                name1 = os.path.splitext(os.path.basename(r["read1"]))[0].replace(
-                    " ", ""
-                )
-                name2 = os.path.splitext(os.path.basename(r["read2"]))[0].replace(
-                    " ", ""
-                )
-                sam_file = os.path.join(target_dir, name1 + "_" + name2 + ".sam")
-                cur_cmd += [
-                    "--un-conc-gz",
-                    os.path.join(target_dir, name1 + "_" + name2 + ".unmapped.fq.gz"),
-                ]
+                if use_bowtie2:
+                    cur_cmd += [
+                        "-1", link_space(r["read1"]), "-2", link_space(r["read2"]),
+                        "-S", str(sam_path),
+                        "--un-conc-gz", str(unmapped_fq_gz_path),
+                        ]
+                else: # minimap2
+                    cur_cmd += [
+                        "-x", "sr", # sr = short read
+                        "-o", str(sam_path),
+                        genome_link,
+                        link_space(r["read1"]), link_space(r["read2"]),
+                        ]
                 read2 = True
             else:
-                cur_cmd += ["-U", link_space(r["read1"])]
-                name1 = os.path.splitext(os.path.basename(r["read1"]))[0].replace(
-                    " ", ""
-                )
-                sam_file = os.path.join(target_dir, name1 + ".sam")
-                cur_cmd += [
-                    "--un-gz",
-                    os.path.join(target_dir, name1 + ".unmapped.fq.gz"),
-                ]
-            cur_cleanup.append(sam_file)
-            bam_file_all = sam_file[:-4] + ".all.bam"
-            bam_file_aligned = sam_file[:-4] + ".aligned.bam"
-            bam_file_sort_name = sam_file[:-4] + ".aligned.name.bam"
-            fastq_file_aligned = sam_file[:-4] + ".aligned.fq"
-            fastq_file_aligned2 = sam_file[:-4] + ".aligned.2.fq"
+                if use_bowtie2:
+                    cur_cmd += [
+                        "-U", link_space(r["read1"]),
+                        "-S", str(sam_path),
+                        "--un-gz", str(unmapped_fq_gz_path),
+                    ]
+                else: # minimap2
+                    cur_cmd += [
+                        *get_minimap_preset(r.get("platform", None)),
+                        "-o", str(sam_path),
+                        genome_link,
+                        link_space(r["read1"]),
+                        ]
+            print(f"{cur_cmd=}")
+
+            cur_cleanup.append(str(sam_path))
+            bam_file_all =        str(sam_path.with_suffix(".all.bam"))
+            bam_file_aligned =    str(sam_path.with_suffix(".aligned.bam"))
+            bam_file_sort_name =  str(sam_path.with_suffix(".aligned.name.bam"))
+            fastq_file_aligned =  str(sam_path.with_suffix(".aligned.fq"))
+            fastq_file_aligned2 = str(sam_path.with_suffix(".aligned.2.fq"))
             samstat_cmd.append(bam_file_all)
             # make bam file information available for subsequent steps
             r[genome["genome"]] = {}
             r[genome["genome"]]["bam"] = bam_file_aligned
-            cur_cmd += ["-S", sam_file]
             if os.path.exists(bam_file_aligned):
                 sys.stderr.write(
                     bam_file_aligned + " alignments file already exists. skipping\n"
                 )
             else:
-                print(cur_cmd)
-                subprocess.run(cur_cmd, check=True)  # call bowtie2
-                view_threads = parameters.get("samtools_view", {}).get("-p", "1")
-                if not view_threads:
-                    view_threads = SAM_THREADS
+                subprocess.run(cur_cmd, check=True)  # call mapping tool
+                view_threads = parameters.get("samtools_view", {}).get("-p", SAM_THREADS)
                 with open(bam_file_all, "w") as outstream:
                     samtools_view = subprocess.Popen(
-                        ["samtools", "view", "-@", str(view_threads), "-Su", sam_file],
+                        ["samtools", "view", "-@", str(view_threads), "-Su", str(sam_path)],
                         stdout=subprocess.PIPE,
                     )
                     samtools_sort = subprocess.Popen(
@@ -261,6 +294,21 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                         stdout=outstream,
                     )
                     samtools_sort.communicate()
+
+                # minimap2 can't write the unmapped reads like bowtie2
+                if not use_bowtie2: # minimap2
+                    with unmapped_fq_gz_path.open('w') as un_fq_gz_hdl:
+                        subprocess.run(
+                            [
+                                "samtools", "fastq",
+                                "--threads", str(view_threads),
+                                "-n", "-f", "4",
+                                bam_file_all
+                            ],
+                            check=True,
+                            stdout=un_fq_gz_hdl,
+                        )
+
                 with open(bam_file_aligned, "w") as outstream:
                     subprocess.run(
                         [
@@ -348,7 +396,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
                         samstat_html.write("</html>\n</body>\n")
                 cur_cleanup.append(bam_file_all)
             for garbage in cur_cleanup:
-                os.remove(garbage)
+                if Path(garbage).exists(): os.remove(garbage)
         files = [
             f
             for f in os.listdir(target_dir)

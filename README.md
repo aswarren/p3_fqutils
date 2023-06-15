@@ -48,4 +48,7 @@ http://www.htslib.org/
 
 HISAT2
 http://daehwankimlab.github.io/hisat2/
+
+Minimap2
+https://github.com/lh3/minimap2
 ```
