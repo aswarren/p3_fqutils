@@ -265,7 +265,6 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                         link_space(r["read1"]),
                         ]
             print(f"{cur_cmd=}")
-
             cur_cleanup.append(str(sam_path))
             bam_file_all =        str(sam_path.with_suffix(".all.bam"))
             bam_file_aligned =    str(sam_path.with_suffix(".aligned.bam"))
@@ -506,6 +505,15 @@ def get_genome(parameters, host_manifest={}):
     sys.stdout.flush()
     return genome
 
+sra_to_local_pltfrm = {
+    "ILLUMINA": "illumina",
+    "OXFORD_NANOPORE": "nanopore",
+    "PACBIO_SMRT": "pacbio",
+    "ION_TORRENT": None,
+    "SOLID": None,
+    "LS454": None,
+    "CAPILLARY": None,
+    }
 
 def setup(job_data, output_dir, tool_params):
     genome_ids = []
@@ -553,6 +561,8 @@ def setup(job_data, output_dir, tool_params):
             subprocess.run(sra_cmd, check=True)
             with open(meta_file) as f:
                 job_meta = json.load(f)
+                if "platform_name" in job_meta[0]:
+                    r.setdefault("platform", sra_to_local_pltfrm[job_meta[0]["platform_name"]])
                 files = job_meta[0].get("files", [])
                 if len(files) > 0:
                     for _, f in enumerate(files):
