@@ -187,6 +187,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
     for genome in genome_list:
         genome_link = genome["genome_link"]
         final_cleanup = []
+        hisat2_used = False
         if "hisat_index" in genome and genome["hisat_index"]:
             archive = tarfile.open(genome["hisat_index"])
             archive.extractall(path=output_dir)
@@ -210,6 +211,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
             # thread count
             if "-p" in hisat2_params:
                 cmd += ["-p", str(hisat2_params["-p"])]
+            hisat2_used = True
         elif use_bowtie2:
             subprocess.run(["bowtie2-build", genome_link, genome_link], check=True)
             bt2_threads = parameters.get("bowtie2", {}).get("-p", BT2_THREADS)
@@ -236,7 +238,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
             sam_path = Path(target_dir) / f"{out_name}.sam"
             unmapped_fq_gz_path = Path(target_dir) / f"{out_name}.unmapped.fq.gz"
             if "read2" in r:
-                if use_bowtie2:
+                if hisat2_used or use_bowtie2:
                     cur_cmd += [
                         "-1", link_space(r["read1"]), "-2", link_space(r["read2"]),
                         "-S", str(sam_path),
@@ -251,7 +253,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                         ]
                 read2 = True
             else:
-                if use_bowtie2:
+                if hisat2_used or use_bowtie2:
                     cur_cmd += [
                         "-U", link_space(r["read1"]),
                         "-S", str(sam_path),
@@ -295,7 +297,7 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                     samtools_sort.communicate()
 
                 # minimap2 can't write the unmapped reads like bowtie2
-                if not use_bowtie2: # minimap2
+                if not (hisat2_used or use_bowtie2): # minimap2
                     with unmapped_fq_gz_path.open('w') as un_fq_gz_hdl:
                         subprocess.run(
                             [
