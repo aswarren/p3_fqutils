@@ -181,8 +181,15 @@ def get_minimap_preset(platform=None):
     else:
         return []
 
-def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_bowtie2=False):
+def run_alignment(genome_list, read_list, parameters, output_dir, job_data):
     # modifies condition_dict sub replicates to include 'bowtie' dict recording output files
+
+    # Get a minimap2 command ready for potential duty.
+    mm2_cmd = ["minimap2", "-a"] # . . . '-a' is to output in SAM format
+    mm2_params = parameters.get("minimap2", {})
+    # thread count (tool default is 3)
+    if "-t" in mm2_params:
+        mm2_cmd += ["-t", str(mm2_params["-t"])]
 
     for genome in genome_list:
         genome_link = genome["genome_link"]
@@ -212,16 +219,10 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
             if "-p" in hisat2_params:
                 cmd += ["-p", str(hisat2_params["-p"])]
             hisat2_used = True
-        elif use_bowtie2:
+        else:
             subprocess.run(["bowtie2-build", genome_link, genome_link], check=True)
             bt2_threads = parameters.get("bowtie2", {}).get("-p", BT2_THREADS)
             cmd = ["bowtie2", "-p", str(bt2_threads), "-x", genome_link]
-        else: 
-            cmd = ["minimap2", "-a"] # . . . '-a' is to output in SAM format
-            mm2_params = parameters.get("minimap2", {})
-            # thread count (tool default is 3)
-            if "-t" in mm2_params:
-                cmd += ["-t", str(mm2_params["-t"])]
 
         print(f"{cmd=}")
 
@@ -231,35 +232,28 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
             cur_cleanup = []
             rcount += 1
             samstat_cmd = ["samstat"]
-            cur_cmd = list(cmd)
+            cur_cmd = list(cmd)  # hisat2 or bowtie2
             read2 = False
             # generate output file name, based on input read file(s) name(s).
             out_name = "_".join([Path(i[1]).stem.replace(" ", "") for i in r.items() if "read" in i[0]])
             sam_path = Path(target_dir) / f"{out_name}.sam"
             unmapped_fq_gz_path = Path(target_dir) / f"{out_name}.unmapped.fq.gz"
-            if "read2" in r:
-                if hisat2_used or use_bowtie2:
-                    cur_cmd += [
-                        "-1", link_space(r["read1"]), "-2", link_space(r["read2"]),
-                        "-S", str(sam_path),
-                        "--un-conc-gz", str(unmapped_fq_gz_path),
-                        ]
-                else: # minimap2
-                    cur_cmd += [
-                        "-x", "sr", # sr = short read
-                        "-o", str(sam_path),
-                        genome_link,
-                        link_space(r["read1"]), link_space(r["read2"]),
-                        ]
+            if "read2" in r:  # illumina, using hisat2 or bowtie2
+                cur_cmd += [
+                    "-1", link_space(r["read1"]), "-2", link_space(r["read2"]),
+                    "-S", str(sam_path),
+                    "--un-conc-gz", str(unmapped_fq_gz_path),
+                ]
                 read2 = True
             else:
-                if hisat2_used or use_bowtie2:
+                if hisat2_used:
                     cur_cmd += [
                         "-U", link_space(r["read1"]),
                         "-S", str(sam_path),
                         "--un-gz", str(unmapped_fq_gz_path),
                     ]
-                else: # minimap2
+                else:  # minimap2
+                    cur_cmd = mm2_cmd
                     cur_cmd += [
                         *get_minimap_preset(r.get("platform", None)),
                         "-o", str(sam_path),
@@ -296,8 +290,8 @@ def run_alignment(genome_list, read_list, parameters, output_dir, job_data, use_
                     )
                     samtools_sort.communicate()
 
-                # minimap2 can't write the unmapped reads like bowtie2
-                if not (hisat2_used or use_bowtie2): # minimap2
+                # minimap2 can't write the unmapped reads like bowtie2 and hisat2
+                if not (read2 or hisat2_used): # minimap2
                     with unmapped_fq_gz_path.open('w') as un_fq_gz_hdl:
                         subprocess.run(
                             [

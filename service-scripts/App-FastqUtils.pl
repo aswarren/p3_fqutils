@@ -124,7 +124,7 @@ sub process_fastq
     {
 	for my $read_name (keys %{$read_tuple})
 	{
-	   if($read_name == "read1" || $read_name == "read2")
+	   if($read_name eq "read1" || $read_name eq "read2")
            {
 	       my $nameref = \$read_tuple->{$read_name};
 	       $in_files{$$nameref} = $nameref;
@@ -136,7 +136,7 @@ sub process_fastq
     {
 	for my $read_name (keys %{$read_tuple})
 	{
-	   if($read_name == "read")
+	   if($read_name eq "read")
            {
 	       my $nameref = \$read_tuple->{$read_name};
 	       $in_files{$$nameref} = $nameref;
