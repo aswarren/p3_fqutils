@@ -1,0 +1,16 @@
+{
+  "reference_genome_id": "83332.12",
+  "output_file": "test_pacbio_long",
+  "recipe": [
+    "FASTQC",
+    "TRIM",
+    "ALIGN"
+  ],
+  "output_path": "/briandk@bv-brc.org/home/ac.briandk/products/fqutils_test/output",
+  "srr_libs": [
+    {
+      "platform": "pacbio",
+      "srr_accession": "SRR20998249"
+    }
+  ]
+}
