@@ -1,0 +1,16 @@
+{
+  "reference_genome_id": "359391.4",
+  "output_file": "test_nanopore_long",
+  "recipe": [
+    "FASTQC",
+    "TRIM",
+    "ALIGN"
+  ],
+  "output_path": "/briandk@bv-brc.org/home/ac.briandk/products/fqutils_test/output",
+  "srr_libs": [
+    {
+      "platform": "nanopore",
+      "srr_accession": "SRR24087961"
+    }
+  ]
+}
