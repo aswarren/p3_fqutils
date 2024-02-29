@@ -16,6 +16,10 @@ from multiprocessing import Process
 from pathlib import Path
 import requests
 
+hostile_pypath = list(Path(os.environ['KB_RUNTIME']).glob('hostile/lib/python3.*/site-packages'))[-1]
+sys.path.append(str(hostile_pypath))
+from hostile.lib import clean_fastqs, clean_paired_fastqs
+
 from fqutil_api import authenticateByEnv, getHostManifest
 
 # Default bowtie2 threads.
@@ -451,6 +455,25 @@ def paired_filter(read_list, parameters, output_dir, job_data):
             r["read2"] += ".paired.fq"
     return read_list
 
+def run_hostile(read_list, output_dir, job_data, tool_params):
+    """
+    Run Hostile to remove host sequences from short and long read (meta)genomes.
+    https://github.com/bede/hostile
+    """
+    for r in read_list:
+        log = ""
+        print(f"{r=}", file=sys.stderr)
+        if "read2" in r:
+            log = clean_paired_fastqs(
+                fastqs=[(Path(r["read1"]), Path(r["read2"]))],
+                out_dir=Path(output_dir)
+            )
+        else:
+            log = clean_fastqs(
+                fastqs=[Path(r["read"])],
+                out_dir=Path(output_dir)
+            )
+        print(f"{log=}", file=sys.stderr)
 
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")
@@ -609,7 +632,6 @@ def moveRead(filepath):
     else:
         return filepath
 
-
 def run_fq_util(job_data, output_dir, tool_params={}):
     # arguments:
     # list of genomes [{"genome":somefile,"annotation":somefile}]
@@ -633,6 +655,8 @@ def run_fq_util(job_data, output_dir, tool_params={}):
             run_fastqc(read_list, output_dir, job_data, tool_params)
         elif step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
+        elif step == "SCRUB_HUMAN":
+            run_hostile(read_list, output_dir, job_data, tool_params)
         else:
             print("Skipping step. Not found: {}".format(step), file=sys.stderr)
     if len(recipe) == 1 and recipe[0].upper() == "PAIRED_FILTER":

@@ -1,0 +1,12 @@
+{
+  "output_path": "/briandk@bv-brc.org/home/app_testing/p3_fqutils/scrub_human",
+  "output_file": "test_scrub_human",
+  "recipe": [
+    "SCRUB_HUMAN"
+  ],
+  "srr_libs": [
+    {
+      "srr_accession": "SRR26665477"
+    }
+  ]
+}
