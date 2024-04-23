@@ -467,20 +467,22 @@ def run_hostile(read_list, output_dir, job_data, tool_params):
     # See https://github.com/bede/hostile/issues/32
     cache_dir = output_dir / "hostile"
     cache_dir.mkdir(exist_ok=True, parents=True)
-    os.environ["XDG_DATA_HOME"] = str(cache_dir)
+    os.environ["HOSTILE_CACHE_DIR"] = str(cache_dir)
 
-    print(f"{os.environ['XDG_DATA_HOME']=}", file=sys.stderr)
+    print(f"{os.environ['HOSTILE_CACHE_DIR']=}", file=sys.stderr)
 
     for r in read_list:
         log = ""
         print(f"{r=}", file=sys.stderr)
         if "read2" in r:
             log = clean_paired_fastqs(
+                force=True,
                 fastqs=[(Path(r["read1"]), Path(r["read2"]))],
                 out_dir=output_dir
             )
         else:
             log = clean_fastqs(
+                force=True,
                 fastqs=[Path(r["read"])],
                 out_dir=output_dir
             )
