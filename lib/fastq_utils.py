@@ -451,6 +451,33 @@ def paired_filter(read_list, parameters, output_dir, job_data):
             r["read2"] += ".paired.fq"
     return read_list
 
+def run_hostile(read_list, output_dir, job_data, tool_params):
+    """
+    Run Hostile to remove host sequences from short and long read (meta)genomes.
+    https://github.com/bede/hostile
+    """
+    output_dir = Path(output_dir)
+    print(f"{output_dir=}", file=sys.stderr)
+
+    # Set the cache dir for the index files
+    # See https://github.com/bede/hostile/issues/32
+    cache_dir = output_dir / "hostile"
+    cache_dir.mkdir(exist_ok=True, parents=True)
+    os.environ["HOSTILE_CACHE_DIR"] = str(cache_dir)
+
+    print(f"{os.environ['HOSTILE_CACHE_DIR']=}", file=sys.stderr)
+
+    cmd = ["hostile", "clean", "--force",
+           "--out-dir", str(output_dir), "--fastq1"]
+
+    for r in read_list:
+        print(f"{r=}", file=sys.stderr)
+        if "read2" in r:
+            cmd += [r["read1"], "--fastq2", r["read2"]]
+        else:
+            cmd += [r["read"],]
+
+        subprocess.run(cmd, check=True)
 
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")
@@ -609,7 +636,6 @@ def moveRead(filepath):
     else:
         return filepath
 
-
 def run_fq_util(job_data, output_dir, tool_params={}):
     # arguments:
     # list of genomes [{"genome":somefile,"annotation":somefile}]
@@ -633,6 +659,8 @@ def run_fq_util(job_data, output_dir, tool_params={}):
             run_fastqc(read_list, output_dir, job_data, tool_params)
         elif step == "ALIGN":
             run_alignment(genome_list, read_list, tool_params, output_dir, job_data)
+        elif step == "SCRUB_HUMAN":
+            run_hostile(read_list, output_dir, job_data, tool_params)
         else:
             print("Skipping step. Not found: {}".format(step), file=sys.stderr)
     if len(recipe) == 1 and recipe[0].upper() == "PAIRED_FILTER":
