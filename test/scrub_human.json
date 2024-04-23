@@ -1,12 +1,12 @@
 {
-  "output_path": "/briandk@bvbrc/home/app_testing/p3_fqutils/scrub_human",
-  "output_file": "test_scrub_human",
-  "recipe": [
-    "SCRUB_HUMAN"
-  ],
-  "srr_libs": [
-    {
-      "srr_accession": "SRR26665477"
-    }
-  ]
+    "recipe": [
+        "Scrub_Human"
+    ],
+    "output_path": "/briandk@bvbrc/home/app_testing/p3_fqutils/scrub_human",
+    "output_file": "test002",
+    "srr_libs": [
+        {
+            "srr_accession": "SRR26665477"
+        }
+    ]
 }
