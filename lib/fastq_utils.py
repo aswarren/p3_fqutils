@@ -464,8 +464,10 @@ def run_hostile(read_list, output_dir, job_data, tool_params):
     cache_dir = output_dir / "hostile"
     cache_dir.mkdir(exist_ok=True, parents=True)
     os.environ["HOSTILE_CACHE_DIR"] = str(cache_dir)
-
     print(f"{os.environ['HOSTILE_CACHE_DIR']=}", file=sys.stderr)
+
+    log_path = output_dir / "hostile_log.json"
+    print(f"{log_path=}", file=sys.stderr)
 
     cmd = ["hostile", "clean", "--force",
            "--out-dir", str(output_dir), "--fastq1"]
@@ -477,7 +479,8 @@ def run_hostile(read_list, output_dir, job_data, tool_params):
         else:
             cmd += [r["read"],]
 
-        subprocess.run(cmd, check=True)
+        with log_path.open('w') as log_hdl:
+            subprocess.run(cmd, check=True, stdout=log_hdl)
 
 def get_genome(parameters, host_manifest={}):
     target_file = os.path.join(parameters["output_path"], parameters["gid"] + ".fna")

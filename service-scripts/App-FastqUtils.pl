@@ -207,7 +207,8 @@ sub process_fastq
 			   [qr/\.bai$/, "bai"],
 			   [qr/\.html$/, "html"],
 			   [qr/\.fastq\.gz$/, "reads"],
-			   [qr/\.txt$/, "txt"]);
+			   [qr/\.txt$/, "txt"],
+			   [qr/\.json$/, "json"]);
 
     my $outfile;
     opendir(D, $work_dir) or die "Cannot opendir $work_dir: $!";
