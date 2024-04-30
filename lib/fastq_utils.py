@@ -466,7 +466,7 @@ def run_hostile(read_list, output_dir, job_data, tool_params):
     os.environ["HOSTILE_CACHE_DIR"] = str(cache_dir)
     print(f"{os.environ['HOSTILE_CACHE_DIR']=}", file=sys.stderr)
 
-    log_path = output_dir / "hostile_log.json"
+    log_path = output_dir / "hostile_report.txt"
     print(f"{log_path=}", file=sys.stderr)
 
     cmd = ["hostile", "clean", "--force",
