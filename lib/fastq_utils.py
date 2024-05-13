@@ -47,7 +47,7 @@ def get_param(program, feature, tool_params):
 def run_fastqc(read_list, output_dir, job_data, tool_params):
     rcount = 0
     threads = get_param("fastqc", "-p", tool_params)
-    fastqc_base_cmd = ["fastqc", "-t", str(threads) if threads else "1"]
+    fastqc_base_cmd = ["fastqc", "--memory", "4096", "-t", str(threads) if threads else "8"]
     for r in read_list:
         rcount += 1
         if len(r.get("fastqc", [])) == 0:
