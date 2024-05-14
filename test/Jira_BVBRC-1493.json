@@ -1,0 +1,12 @@
+{
+    "recipe": [
+        "FastQC"
+    ],
+    "output_path": "/briandk@bvbrc/home/bugs/BVBRC-1493",
+    "output_file": "test001",
+    "srr_libs": [
+        {
+            "srr_accession": "SRR20184597"
+        }
+    ]
+}
