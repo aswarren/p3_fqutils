@@ -1,5 +1,5 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Fastq-Utils",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "fastq_align_duplicates",
     "reference_genome_id": "197.5220",
     "recipe": [
@@ -7,20 +7,20 @@
     ],
         "paired_end_libs": [
 		        {
-			            "read1": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_1.1k.fastq",
-			            "read2": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_2.1k.fastq"
+			            "read1": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_1.1k.fastq",
+			            "read2": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_2.1k.fastq"
 			        },
 			 {
-			     "read1": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_1.1k.fastq",
-			     "read2": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_2.1k.fastq"
+			     "read1": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_1.1k.fastq",
+			     "read2": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_2.1k.fastq"
 			   }
         ],
     "single_end_libs": [
         {
-            "read": "/jsporter@patricbrc.org/home/Test_Files/ERR3457743.1k.fastq"
+            "read": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/ERR3457743.1k.fastq"
         },
         {
-            "read": "/jsporter@patricbrc.org/home/Test_Files/ERR3457743.1k.fastq"
+            "read": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/ERR3457743.1k.fastq"
         }
 
     ]
