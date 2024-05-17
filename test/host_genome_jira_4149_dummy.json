@@ -1,5 +1,5 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/Test_Files",
     "output_file": "SRA_fqutils_dummy",
     "reference_genome_id": "36870.6",
     "recipe": [

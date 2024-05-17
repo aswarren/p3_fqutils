@@ -2,7 +2,7 @@
     "recipe": [
         "FastQC"
     ],
-    "output_path": "/briandk@bvbrc/home/bugs/BVBRC-1493",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/Test_Files",
     "output_file": "test001",
     "srr_libs": [
         {

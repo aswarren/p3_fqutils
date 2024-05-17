@@ -6,7 +6,7 @@
     "TRIM",
     "ALIGN"
   ],
-  "output_path": "/briandk@bv-brc.org/home/ac.briandk/products/fqutils_test/output",
+  "output_path": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/Test_Files",
   "srr_libs": [
     {
       "platform": "nanopore",
