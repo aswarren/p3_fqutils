@@ -5,7 +5,7 @@
       "srr_accession": "SRR528310"
     }
   ],
-  "output_path": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/Fastq-Utils",
+  "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
   "reference_genome_id": "234826.6",
   "recipe": [
     "Trim",

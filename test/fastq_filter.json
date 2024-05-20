@@ -1,10 +1,10 @@
 {
-    "output_path": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "fqutils_filter",
     "paired_end_libs": [
         {
-	            "read1": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/data/SRR10961160_1.fastq",
-	            "read2": "/olson@patricbrc.org/PATRIC-QA/applications/App-FastqUtils/data/SRR10961160_2.fastq"
+	            "read1": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR10961160_1.fastq",
+	            "read2": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR10961160_2.fastq"
 	        }
     ],
     "recipe": [
