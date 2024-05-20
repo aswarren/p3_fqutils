@@ -1,5 +1,5 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "fqutils_parameters",
     "recipe": [
         "Trim",
@@ -7,7 +7,7 @@
     ],
     "single_end_libs": [
         {
-            "read": "/jsporter@patricbrc.org/home/Test_Files/test.fq"
+            "read": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/test.fq"
         }
     ]
 }

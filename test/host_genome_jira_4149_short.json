@@ -1,11 +1,11 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Experiments",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "jira_4149",
     "reference_genome_id": "9606.33",
     "paired_end_libs": [
         {
-            "read1": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_1.1k.fastq",
-            "read2": "/jsporter@patricbrc.org/home/Test_Files/SRR1201673_2.1k.fastq"
+            "read1": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_1.1k.fastq",
+            "read2": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/SRR1201673_2.1k.fastq"
         }
     ],
     "recipe": [

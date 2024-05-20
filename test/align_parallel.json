@@ -1,5 +1,5 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "fastq_align",
     "reference_genome_id": "197.5220",
     "recipe": [
@@ -7,7 +7,7 @@
     ],
     "single_end_libs": [
         {
-            "read": "/jsporter@patricbrc.org/home/Tn-Seq/MmeI/ERR1777068.5k.fastq"
+            "read": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/ERR1777068.5k.fastq"
         }
     ]
 }

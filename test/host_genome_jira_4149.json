@@ -1,5 +1,5 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "JIRA_4149_SRR1201673",
     "reference_genome_id": "9606.33",
     "recipe": [

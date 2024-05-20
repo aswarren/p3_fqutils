@@ -1,11 +1,11 @@
 {
-    "output_path": "/jsporter@patricbrc.org/home/Test_Files",
+    "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
     "output_file": "fastq_filter_gz",
     "reference_genome_id": "903917.3",
     "paired_end_libs": [
         {
-	            "read1": "/jsporter@patricbrc.org/home/Test_Files/bau_sim_R1.fq.gz",
-	            "read2": "/jsporter@patricbrc.org/home/Test_Files/bau_sim_R2.fq.gz"
+	            "read1": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/bau_sim_R1.fq.gz",
+	            "read2": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils/bau_sim_R2.fq.gz"
 	        }
     ],
     "recipe": [

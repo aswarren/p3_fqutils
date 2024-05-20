@@ -6,7 +6,7 @@
     "TRIM",
     "ALIGN"
   ],
-  "output_path": "/briandk@bv-brc.org/home/ac.briandk/products/fqutils_test/output",
+  "output_path": "/olson@patricbrc.org/PATRIC-QA/DataSets/FastqUtils",
   "srr_libs": [
     {
       "platform": "pacbio",
