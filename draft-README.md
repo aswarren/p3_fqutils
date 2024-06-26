@@ -18,6 +18,7 @@ This module provides the following application specfication(s):
 
 ## See also
 
+* [Fastq Utilities Service Quick Reference](https://www.bv-brc.org/docs/quick_references/services/fastq_utilities_service.html)
 * [Fastq Utilities Service](https://www.bv-brc.org/docs/https://bv-brc.org/app/FastqUtil.html)
 * [Fastq Utilities Service Tutorial](https://www.bv-brc.org/docs//tutorial/fastq_utilities/fastq_utilities.html)
 
