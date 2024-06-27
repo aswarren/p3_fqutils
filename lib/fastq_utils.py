@@ -469,15 +469,15 @@ def run_hostile(read_list, output_dir, job_data, tool_params):
     log_path = output_dir / "hostile_report.txt"
     print(f"{log_path=}", file=sys.stderr)
 
-    cmd = ["hostile", "clean", "--force",
+    base_cmd = ["hostile", "clean", "--force",
            "--out-dir", str(output_dir), "--fastq1"]
 
     for r in read_list:
         print(f"{r=}", file=sys.stderr)
         if "read2" in r:
-            cmd += [r["read1"], "--fastq2", r["read2"]]
+            cmd = base_cmd + [r["read1"], "--fastq2", r["read2"]]
         else:
-            cmd += [r["read"],]
+            cmd = base_cmd + [r["read"],]
 
         with log_path.open('w') as log_hdl:
             subprocess.run(cmd, check=True, stdout=log_hdl)
