@@ -3,7 +3,7 @@
 ## Overview
 
 The Fastq Utilities service provides capabilities for analyzing and processing raw sequencing data in FASTQ format. 
-This service helps researchers assess read quality, trim adapters and low-quality sequences, align reads to reference genomes, and ensure proper pairing of paired-end reads. 
+This service helps researchers assess read quality, trim adapters and low-quality sequences, align reads to reference genomes, ensure proper pairing of paired-end reads, and remove host contamination.
 
 **Key features:**
 
@@ -11,6 +11,7 @@ This service helps researchers assess read quality, trim adapters and low-qualit
 *   **Trimming:** Remove adapter sequences and low-quality bases from reads using Trim Galore, improving downstream analysis accuracy.
 *   **Alignment:** Align reads to a reference genome using Bowtie2, producing BAM files and generating SamStat reports to evaluate alignment quality and coverage.
 *   **Paired-End Read Synchronization:** Employ Fastq-Pair to ensure proper synchronization of paired-end reads, addressing issues with unordered sequences or missing mates that can hinder downstream analyses like genome assembly.
+*   **Host Read Removal:** Utilize Hostile to eliminate reads originating from the host organism, enhancing the analysis of microbial or other target sequences in complex samples.
 
 ## Service Inputs 
 
@@ -30,6 +31,7 @@ Specify the processing steps to be performed. These options can be selected inde
 *   **FastQC:** Generate a FastQC report to assess read quality.
 *   **Align:** Align reads to a reference genome using Bowtie2.
 *   **Paired Filter:**  Synchronize paired-end reads using Fastq-Pair.
+*   **Hostile:** Remove human reads from the data. This option utilizes either Bowtie2 (for short reads) or Minimap2 (for long reads) for alignment and supports paired or unpaired FASTQ files, both compressed and uncompressed.
 
 **3. Parameters:**
 
@@ -62,6 +64,10 @@ The service generates various output files depending on the selected pipeline op
 *   **`xxx_1.paired.fq.gz` / `xxx_2.paired.fq.gz`:** Synchronized paired-end FASTQ files, ensuring each read has a corresponding mate in the paired file.
 *   **`xxx_meta.txt`:**  A report file providing details about the paired filtering process.
 
+**Hostile:**
+
+*   **`nonhuman_*.fastq.gz`**: Output files containing reads identified as non-human.
+
 **Common Output Files:**
 
 *   **`meta.txt`:** A general metadata file containing information about the job submission and parameters.
@@ -76,6 +82,8 @@ This module contains the following scripts that power the Fastq Utilities Servic
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [App-FastqUtils.pl](service-scripts/App-FastqUtils.pl) | The primary application script for the Fastq Utilities Service. It handles user input, job submission, and result management for the service.                                                                                                                                                    |
 | [FQUtils.pm](lib/BV/BRC/Service/FQUtils.pm)          | A Perl module containing functions and subroutines specific to the Fastq Utilities Service. It handles tasks such as reading configuration files, parsing input parameters, generating command-line arguments for external tools, and processing output files.  |
+| [p3-fqutils.py](scripts/p3-fqutils.py)          | Python interface for invoking the tool via command line  |
+| [fastq_uils.py](lib/fastq_utils.py)          | Python library for forming and running commands given inputs |
 
 ## See Also
 
@@ -87,6 +95,8 @@ This module contains the following scripts that power the Fastq Utilities Servic
 
 *   Andrews, S. FastQC: a quality control tool for high throughput sequence data. 2010.
 *   Edwards, J.A. and Edwards, R.A. Fastq-pair: efficient synchronization of paired-end fastq files. bioRxiv, 2019: p. 552885.
+*   Fitzgerald, M., et al. "Hostile: Precise host read removal from metagenomes." bioRxiv (2023). https://www.biorxiv.org/content/10.1101/2023.07.04.547735v1
+*   https://github.com/bede/hostile
 *   Krueger, F. Trim Galore: a wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files, with some extra functionality for MspI-digested RRBS-type (Reduced Representation Bisulfite-Seq) libraries. URL http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/. (Date of access: 28/04/2016), 2012.
 *   Langmead, B. and Salzberg, S.L. Fast gapped-read alignment with Bowtie 2. Nature methods, 2012. 9(4): p. 357.
 *   Lassmann, T., Hayashizaki, Y. and Daub, C.O. SAMStat: monitoring biases in next generation sequencing data. Bioinformatics, 2010. 27(1): p. 130-131.
